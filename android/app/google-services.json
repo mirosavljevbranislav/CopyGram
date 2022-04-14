@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "262718352294",
+    "project_id": "igcopy-c7e20",
+    "storage_bucket": "igcopy-c7e20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262718352294:android:cbb5432ef698c5a9567d67",
+        "android_client_info": {
+          "package_name": "com.example.igc2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262718352294-ieome5dovg791ffq5f46ojcso4adv23g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrFtZ3CRI6D0eYekMD3zGla5LlMqWp1no"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262718352294-ieome5dovg791ffq5f46ojcso4adv23g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
