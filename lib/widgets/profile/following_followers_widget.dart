@@ -15,24 +15,24 @@ class FollowingFollowersWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<FollowingFollowersWidget> createState() => _FollowingFollowersWidgetState();
+  State<FollowingFollowersWidget> createState() =>
+      _FollowingFollowersWidgetState();
 }
 
-
 class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
-
-  
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as FollowingFollowersWidget;
     return DefaultTabController(
       initialIndex: 1,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.username.toString()),
+          title: Text(args.username.toString()),
           bottom: TabBar(tabs: [
-            Tab(text: '${widget.followers?.length.toString()} followers'),
-            Tab(text: '${widget.following?.length.toString()} following'),
+            Tab(text: '${args.followers?.length.toString()} followers'),
+            Tab(text: '${args.following?.length.toString()} following'),
           ]),
         ),
         body: TabBarView(
@@ -51,11 +51,13 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                               BorderRadius.all(Radius.circular(25.0)))),
                 ),
               ),
-              widget.followers!.isEmpty
+              args.followers == null
                   ? Center(
-                      child: Text('Currently you have no followers'),
+                      child: Text('Currently no followers'),
                     )
                   : ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
                       itemCount: 0,
                       itemBuilder: (ctx, index) => Container(),
                     )
@@ -74,11 +76,13 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                               BorderRadius.all(Radius.circular(25.0)))),
                 ),
               ),
-              widget.followers!.isEmpty
+              args.followers == null
                   ? Center(
-                      child: Text('Currently you don\'t follow anyone'),
+                      child: Text('Currently no following'),
                     )
                   : ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
                       itemCount: 0,
                       itemBuilder: (ctx, index) => Container(),
                     )

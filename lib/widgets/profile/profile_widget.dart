@@ -4,8 +4,10 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/screens/following_followers_screen.dart';
+import 'package:igc2/widgets/profile/following_followers_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
   String? email;
@@ -64,8 +66,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         child: Row(
                           children: [
                             Padding(
-                                padding: EdgeInsets.only(top: 25),
-                                child: Image.network('https://firebasestorage.googleapis.com/v0/b/igcopy-c7e20.appspot.com/o/images%2Fscaled_bc811765-6f9c-4722-9a0d-ec150578b79d5302304234631337468.jpg?alt=media&token=59cea240-b418-4fe9-b53f-bada02f51f64', height: 120, width: 120,)),
+                              padding: EdgeInsets.only(top: 25),
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundImage:
+                                    NetworkImage(widget.pictureID.toString()),
+                              ),
+                            ),
                             TextButton(
                               child: Text(
                                 '${widget.posts?.length.toString()}  \nPosts',
@@ -88,7 +95,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               ),
                               onPressed: () {
                                 Navigator.pushNamed(
-                                    context, FollowingFollowersScreen.routeName, arguments: 1);
+                                    context, FollowingFollowersScreen.routeName,
+                                    arguments: FollowingFollowersWidget(
+                                      username: widget.username,
+                                      followers: widget.followers,
+                                      following: widget.following,
+                                    ));
                               },
                             ),
                             TextButton(
@@ -102,7 +114,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               ),
                               onPressed: () {
                                 Navigator.pushNamed(
-                                    context, FollowingFollowersScreen.routeName, arguments: 1);
+                                    context, FollowingFollowersScreen.routeName,
+                                    arguments: FollowingFollowersWidget(
+                                      username: widget.username,
+                                      followers: widget.followers,
+                                      following: widget.following,
+                                    ));
                               },
                             ),
                           ],
@@ -112,11 +129,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       SizedBox(
                         height: 30,
                       ),
-                      Text('Description will go here'),
+                      Padding(
+                        padding: EdgeInsets.only(left: 5, right: 5),
+                        child: Text(
+                            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s'
+                            'standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make'
+                            ' a type specimen book. '),
+                      ),
                       SizedBox(
                         height: 20,
                       ),
                       Container(
+                        padding: EdgeInsets.only(left: 5, right: 5),
                         width: double.infinity,
                         child: TextButton(
                           onPressed: () {},

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:igc2/widgets/search_widget.dart';
+import 'package:igc2/widgets/search/search_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   static const routeName = '/search';

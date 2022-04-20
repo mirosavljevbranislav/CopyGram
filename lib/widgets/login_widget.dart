@@ -41,6 +41,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                       )
                     ],
                   ));
+      }else{
+        showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    content: Text('Invalid credentials.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => {Navigator.pop(context)},
+                        child: Text('Ok'),
+                      )
+                    ],
+                  ));
       }
     }
   }

@@ -6,6 +6,7 @@ import 'package:igc2/screens/login_screen.dart';
 import 'package:igc2/screens/profile_screen.dart';
 import 'package:igc2/screens/registration_screen.dart';
 import 'package:igc2/screens/search_screen.dart';
+import 'package:igc2/screens/searched_user_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         ProfileScreen.routeName: (context) => const ProfileScreen(),
         FollowingFollowersScreen.routeName: (context) => const FollowingFollowersScreen(),
         SearchScreen.routeName: (context) => const SearchScreen(),
+        SearchedUserScreen.routeName: ((context) => const SearchedUserScreen()),
       },
     );
   }

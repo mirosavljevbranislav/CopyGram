@@ -62,11 +62,11 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
       UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile!);
       TaskSnapshot taskSnapshot = await uploadTask;
       taskSnapshot.ref.getDownloadURL().then(
-            (value) => print("Done: $value"),
+            (value) => setState(() {
+              fileName = value;
+            }),
           );
-      setState(() {
-        pictureID = fileName;
-      });
+
       authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       String? _hashedPassword = _hashPassword(password);
@@ -78,7 +78,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         posts: [],
         followers: [],
         following: [],
-        pictureID: fileName.substring(0, fileName.length - 4),
+        pictureID: fileName,
       );
 
       repository.addUser(newUser);
