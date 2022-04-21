@@ -1,7 +1,8 @@
-// ignore_for_file: use_key_in_widget_constructors, avoid_print, prefer_const_constructors
+// ignore_for_file: use_key_in_widget_constructors, avoid_print, prefer_const_constructors, must_be_immutable
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:igc2/screens/new_post_screen.dart';
 import 'package:igc2/screens/profile_screen.dart';
 import 'package:igc2/screens/search_screen.dart';
 
@@ -56,7 +57,9 @@ class _HomeWidgetState extends State<HomeWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, NewPostScreen.routeName);
+        },
         backgroundColor: Theme.of(context).backgroundColor,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

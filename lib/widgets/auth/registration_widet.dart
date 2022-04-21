@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, unused_local_variable, unnecessary_null_comparison
+// ignore_for_file: prefer_const_constructors, avoid_print, unused_local_variable, unnecessary_null_comparison, unused_field
 
 import 'dart:convert';
 import 'dart:io';
@@ -9,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:igc2/repository/data_repository.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-import '../models/user.dart' as user_model;
+import '../../models/user.dart' as user_model;
 import 'package:crypto/crypto.dart';
 
 class RegistrationWidget extends StatefulWidget {
@@ -57,8 +57,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
     UserCredential authResult;
     try {
       String fileName = path.basename(_imageFile!.path);
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('images/$fileName');
+      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('images/$fileName');
       UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile!);
       TaskSnapshot taskSnapshot = await uploadTask;
       taskSnapshot.ref.getDownloadURL().then(

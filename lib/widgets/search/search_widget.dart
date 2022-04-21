@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, avoid_print
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, avoid_print, must_be_immutable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,6 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   String? searchedUser;
-  late int numberOfUsers;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -56,7 +55,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                             if (searchedUser != null &&
                                 document?[index]['username']
                                     .contains(searchedUser)) {
-                              numberOfUsers += 1;
                               return Padding(
                                 padding: EdgeInsets.fromLTRB(8, 5, 0, 5),
                                 child: SearchList(

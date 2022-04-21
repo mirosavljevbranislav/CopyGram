@@ -1,10 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables, must_be_immutable
 
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/screens/following_followers_screen.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
@@ -35,10 +34,6 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   File? profileImage;
-
-  Future<QuerySnapshot<Map<String, dynamic>>> getImages() {
-    return FirebaseFirestore.instance.collection("images").get();
-  }
 
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
 

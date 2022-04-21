@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors
+// ignore_for_file: avoid_print, prefer_const_constructors, unused_local_variable
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   void signInUser(String? email, String? password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email!, password: password!);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email!, password: password!);
       Navigator.pushNamed(context, HomeScreen.routeName);
     }on FirebaseAuthException catch (e){
       if (e.code == 'user-not-found' || e.code == 'wrong-password'){

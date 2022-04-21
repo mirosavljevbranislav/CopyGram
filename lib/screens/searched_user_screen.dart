@@ -7,6 +7,6 @@ class SearchedUserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PersonProfile();
+    return const PersonProfile();
   }
 }

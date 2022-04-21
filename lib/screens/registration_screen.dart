@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:igc2/widgets/registration_widet.dart';
+import 'package:igc2/widgets/auth/registration_widet.dart';
 
 class RegistrationScreen extends StatelessWidget {
   static const routeName = '/register';

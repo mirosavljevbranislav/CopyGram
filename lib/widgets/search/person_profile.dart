@@ -119,7 +119,7 @@ class _PersonProfileState extends State<PersonProfile> {
               const SizedBox(
                 height: 20,
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: EdgeInsets.only(left: 5, right: 5),
