@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   pictureID: document[i]['pictureID'],
                   followers: document[i]['followers'],
                   following: document[i]['following'],
-                  posts: document[i]['followers'],
+                  posts: document[i]['posts'],
                 );
               }
             }

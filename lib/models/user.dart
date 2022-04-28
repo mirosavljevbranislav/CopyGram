@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import './post.dart';
 
 class User {
   String? email;
   String? fullname;
   String? username;
   String? password;
-  String? referenceId;
-  List<Post>? posts;
+  int? posts;
   List<User>? followers;
   List<User>? following;
   String? pictureID;
+  String? userid;
 
   User({
     @required this.email,
@@ -21,6 +20,7 @@ class User {
     @required this.followers,
     @required this.following,
     @required this.pictureID,
+    @required this.userid,
   });
 
   Map<String, dynamic> toJson() => _userToJson(this);
@@ -34,5 +34,6 @@ class User {
         'followers': instance.followers,
         'following': instance.following,
         'pictureID': instance.pictureID,
+        'userID': instance.userid,
       };
 }

@@ -12,7 +12,8 @@ class SearchList extends StatefulWidget {
   String? pictureID;
   List? followers;
   List? following;
-  List? posts;
+  int? posts;
+  String? userID;
 
   SearchList({
     Key? key,
@@ -21,7 +22,8 @@ class SearchList extends StatefulWidget {
     required this.pictureID,
     required this.followers,
     required this.following,
-    this.posts,
+    required this.posts,
+    required this.userID,
   }) : super(key: key);
 
   @override
@@ -46,11 +48,12 @@ class _SearchListState extends State<SearchList> {
                 followers: widget.followers,
                 following: widget.followers,
                 posts: widget.posts,
+                userid: widget.userID,
               ));
         }
       },
       child: Row(
-        
+        mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
             radius: 30,
@@ -63,11 +66,11 @@ class _SearchListState extends State<SearchList> {
           ),
           Column(
             children: [
-              Text(widget.followers!.length.toString() + ' followers'),
+              Text('${widget.followers?.length.toString()} followers'),
               SizedBox(
                 height: 5,
               ),
-              Text(widget.following!.length.toString() + ' following'),
+              Text('${widget.following?.length.toString()} following'),
             ],
           )
         ],

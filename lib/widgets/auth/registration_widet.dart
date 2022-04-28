@@ -22,7 +22,6 @@ class RegistrationWidget extends StatefulWidget {
 class _RegistrationWidgetState extends State<RegistrationWidget> {
   File? _imageFile;
   final picker = ImagePicker();
-  String? pictureID;
 
   bool _passwordIsObscure = true;
   bool _confimartionIsObscure = true;
@@ -57,7 +56,8 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
     UserCredential authResult;
     try {
       String fileName = path.basename(_imageFile!.path);
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('images/$fileName');
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('images/$fileName');
       UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile!);
       TaskSnapshot taskSnapshot = await uploadTask;
       taskSnapshot.ref.getDownloadURL().then(
@@ -74,13 +74,14 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         fullname: _fullname,
         username: _username,
         password: _hashedPassword,
-        posts: [],
+        posts: 0,
         followers: [],
         following: [],
         pictureID: fileName,
+        userid: authResult.user?.uid.toString(),
       );
 
-      repository.addUser(newUser);
+      repository.addUser(newUser, authResult.user?.uid.toString());
       showDialog(
           context: context,
           builder: (context) => AlertDialog(

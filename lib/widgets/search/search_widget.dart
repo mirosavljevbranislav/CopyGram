@@ -21,7 +21,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if (!currentFocus.hasPrimaryFocus) {
+            if (currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
           },
@@ -64,10 +64,11 @@ class _SearchWidgetState extends State<SearchWidget> {
                                   followers: document?[index]['followers'],
                                   following: document?[index]['following'],
                                   posts: document?[index]['posts'],
+                                  userID: document?[index]['userID'],
                                 ),
                               );
                             } else if (searchedUser == null) {
-                              ListView.builder(
+                              return ListView.builder(
                                 itemCount: document?.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
@@ -76,30 +77,18 @@ class _SearchWidgetState extends State<SearchWidget> {
                                       email: document?[index]['email'],
                                       username: document?[index]['username'],
                                       pictureID: document?[index]['pictureID'],
-                                      followers: document?[index]['followers'],
-                                      following: document?[index]['following'],
+                                      followers:
+                                          document?[index]['followers'].length,
+                                      following:
+                                          document?[index]['following'].length,
                                       posts: document?[index]['posts'],
+                                      userID: document?[index]['userID'],
                                     ),
                                   );
                                 },
                               );
                             }
-                            return ListView.builder(
-                              itemCount: document?.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.fromLTRB(8, 5, 0, 5),
-                                  child: SearchList(
-                                    email: document?[index]['email'],
-                                    username: document?[index]['username'],
-                                    pictureID: document?[index]['pictureID'],
-                                    followers: document?[index]['followers'],
-                                    following: document?[index]['following'],
-                                    posts: document?[index]['posts'],
-                                  ),
-                                );
-                              },
-                            );
+                            return Text('No user found...');
                           });
                     }))
           ])),

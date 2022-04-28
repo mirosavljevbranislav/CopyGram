@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables, must_be_immutable
+// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables, must_be_immutable, avoid_print, avoid_function_literals_in_foreach_calls
 
 import 'dart:io';
 
@@ -15,7 +15,8 @@ class ProfileWidget extends StatefulWidget {
   String? pictureID;
   List? followers;
   List? following;
-  List? posts;
+  int? posts;
+  List listOfPosts = [];
 
   ProfileWidget({
     Key? key,
@@ -36,9 +37,25 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   File? profileImage;
 
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  String? currentUserID = FirebaseAuth.instance.currentUser?.uid;
+
+  _loadUsers() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        if (doc['email'] == userEmail) {
+          print(doc["email"]);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    List listOfPosts = [];
+    _loadUsers();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.username.toString()),
@@ -63,14 +80,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             Padding(
                               padding: EdgeInsets.only(top: 25),
                               child: CircleAvatar(
-                                radius: 50,
-                                backgroundImage:
-                                    NetworkImage(widget.pictureID.toString()),
-                              ),
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(
+                                      widget.pictureID.toString())),
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.posts?.length.toString()}  \nPosts',
+                                '${widget.posts}\nPosts',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -81,7 +97,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.followers?.length.toString()}  \nFollowers',
+                                '${widget.followers?.length.toString()}\nFollowers',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -100,7 +116,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.posts?.length.toString()}  \nFollowing',
+                                '${widget.following?.length.toString()}\nFollowing',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -149,11 +165,41 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       SizedBox(
                         height: 30,
                       ),
-                      Column(
-                        children: const [
-                          Icon(Icons.error_outline),
-                          Text('This user currently has no pictures...')
-                        ],
+                      Flexible(
+                        child: Column(children: [
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('posts')
+                                  .snapshots(),
+                              builder: (ctx,
+                                  AsyncSnapshot<QuerySnapshot> streamsnapshot) {
+                                if (streamsnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                for (int i = 0;
+                                    i < streamsnapshot.data!.docs.length;
+                                    i++) {
+                                  if (currentUserID ==
+                                      streamsnapshot.data!.docs[i]['userID']) {
+                                    listOfPosts
+                                        .add(streamsnapshot.data!.docs[i]);
+                                  }
+                                }
+                                return Flexible(
+                                  child: GridView.count(
+                                    crossAxisCount: 3,
+                                    children: listOfPosts.map((e) {
+                                      return Center(
+                                        child: Image.network(e['picture']),
+                                      );
+                                    }).toList(),
+                                  ),
+                                );
+                              }),
+                        ]),
                       )
                     ],
                   )
