@@ -6,10 +6,11 @@ class User {
   String? username;
   String? password;
   int? posts;
-  List<User>? followers;
-  List<User>? following;
+  List? followers;
+  List? following;
+  List? postURL;
   String? pictureID;
-  String? userid;
+  String? userID;
 
   User({
     @required this.email,
@@ -19,8 +20,9 @@ class User {
     @required this.posts,
     @required this.followers,
     @required this.following,
+    @required this.postURL,
     @required this.pictureID,
-    @required this.userid,
+    @required this.userID,
   });
 
   Map<String, dynamic> toJson() => _userToJson(this);
@@ -33,7 +35,45 @@ class User {
         'posts': instance.posts,
         'followers': instance.followers,
         'following': instance.following,
+        'postURL': instance.postURL,
         'pictureID': instance.pictureID,
-        'userID': instance.userid,
+        'userID': instance.userID,
+      };
+}
+
+class SearchedUser {
+  String? email;
+  String? fullname;
+  String? username;
+  int? posts;
+  List? followers;
+  List? following;
+  List? postURL;
+  String? pictureID;
+  String? userID;
+  SearchedUser({
+    @required this.email,
+    @required this.fullname,
+    @required this.username,
+    @required this.posts,
+    @required this.followers,
+    @required this.following,
+    @required this.postURL,
+    @required this.pictureID,
+    @required this.userID,
+  });
+
+  Map<String, dynamic> toJson() => _userToJson(this);
+
+  Map<String, dynamic> _userToJson(SearchedUser instance) => <String, dynamic>{
+        'email': instance.email,
+        'fullname': instance.fullname,
+        'username': instance.username,
+        'posts': instance.posts,
+        'followers': instance.followers,
+        'following': instance.following,
+        'postURL': instance.postURL,
+        'pictureID': instance.pictureID,
+        'userID': instance.userID,
       };
 }

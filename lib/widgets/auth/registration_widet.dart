@@ -77,8 +77,9 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         posts: 0,
         followers: [],
         following: [],
+        postURL: [],
         pictureID: fileName,
-        userid: authResult.user?.uid.toString(),
+        userID: authResult.user?.uid.toString(),
       );
 
       repository.addUser(newUser, authResult.user?.uid.toString());

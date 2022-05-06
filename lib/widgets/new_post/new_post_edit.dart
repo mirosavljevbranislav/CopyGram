@@ -1,7 +1,8 @@
-// ignore_for_file: must_be_immutable, prefer_const_constructors, avoid_print
+// ignore_for_file: must_be_immutable, prefer_const_constructors, avoid_print, non_constant_identifier_names
 
 import 'dart:io';
 
+import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,6 +12,7 @@ import 'package:location/location.dart' as loc;
 import 'package:path/path.dart' as path;
 import 'package:geolocator/geolocator.dart' as geo_loc;
 import 'package:geocoding/geocoding.dart' as geo_cod;
+import 'package:intl/intl.dart';
 
 class NewPostEdit extends StatefulWidget {
   static const routeName = '/newpostedit';
@@ -38,25 +40,38 @@ class _NewPostEditState extends State<NewPostEdit> {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  void _addPostURL(String PID) {
+    users.doc(userID).update({
+      "postURL": FieldValue.arrayUnion([PID])
+    }).then((_) {
+      print("success!");
+    });
+  }
+
   _addNewPost(String desc, String location, File imageID) async {
     String fileName = path.basename(imageID.path);
     Reference firebaseStorageRef =
         FirebaseStorage.instance.ref().child('images/$fileName');
     UploadTask uploadTask = firebaseStorageRef.putFile(imageID);
     TaskSnapshot taskSnapshot = await uploadTask;
+    var postUuid = Uuid().v4();
+    String formatedDate = DateFormat('MMMM d,yyyy').format(DateTime.now());
     taskSnapshot.ref.getDownloadURL().then(
           (value) => setState(() {
             fileName = value;
             Post newPost = Post(
                 userID: userID,
+                postID: postUuid,
                 picture: fileName,
                 location: location,
                 description: desc,
-                likes: 0,
-                comments: []);
+                likes: [],
+                comments: [],
+                pictureTakenAt: formatedDate);
             final CollectionReference collection =
                 FirebaseFirestore.instance.collection("posts");
-            collection.add(newPost.toJson());
+            collection.doc(postUuid).set(newPost.toJson());
+            _addPostURL(fileName);
           }),
         );
     updateUser();
@@ -90,8 +105,8 @@ class _NewPostEditState extends State<NewPostEdit> {
         position.latitude, position.longitude);
     geo_cod.Placemark place = placemarks[0];
     setState(() {
-      widget.address =
-          '${place.street}\n ${place.subLocality}\n ${place.locality}\n ${place.postalCode}\n ${place.country}';
+      // widget.address = '${place.street} ${place.subLocality} ${place.locality} ${place.postalCode} ${place.country}';
+      widget.address = '${place.street} ${place.country}';
     });
   }
 

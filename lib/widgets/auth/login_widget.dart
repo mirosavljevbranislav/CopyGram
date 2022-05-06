@@ -3,7 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/screens/home_screen.dart';
-import 'package:igc2/screens/registration_screen.dart';
+import 'package:igc2/screens/auth/registration_screen.dart';
 
 
 class LoginWidget extends StatefulWidget {

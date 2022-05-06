@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls, avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/profile/profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,7 +16,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  List listOfPosts = [];
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
+  String? currentUserID = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -24,13 +30,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             for (int i = 0; i < document.length; i++) {
               if (userEmail == document[i]['email']) {
                 return ProfileWidget(
-                  email: document[i]['email'],
-                  username: document[i]['username'],
-                  fullname: document[i]['fullname'],
-                  pictureID: document[i]['pictureID'],
-                  followers: document[i]['followers'],
-                  following: document[i]['following'],
-                  posts: document[i]['posts'],
+                  user: SearchedUser(
+                    email: document[i]['email'],
+                    username: document[i]['username'],
+                    fullname: document[i]['fullname'],
+                    pictureID: document[i]['pictureID'],
+                    followers: document[i]['followers'],
+                    following: document[i]['following'],
+                    postURL: document[i]['postURL'],
+                    posts: document[i]['posts'],
+                    userID: document[i]['userID'],
+                  ),
                 );
               }
             }

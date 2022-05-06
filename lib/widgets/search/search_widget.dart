@@ -2,10 +2,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/search/search_list.dart';
 
 class SearchWidget extends StatefulWidget {
-  String? searchedUser;
   SearchWidget({Key? key}) : super(key: key);
 
   @override
@@ -13,7 +13,7 @@ class SearchWidget extends StatefulWidget {
 }
 
 class _SearchWidgetState extends State<SearchWidget> {
-  String? searchedUser;
+  String? searchedUser; //Username for searching
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -52,43 +52,28 @@ class _SearchWidgetState extends State<SearchWidget> {
                       return ListView.builder(
                           itemCount: document?.length,
                           itemBuilder: (context, index) {
-                            if (searchedUser != null &&
-                                document?[index]['username']
-                                    .contains(searchedUser)) {
+                            if (document?[index]['username']
+                                .contains(searchedUser)) {
                               return Padding(
                                 padding: EdgeInsets.fromLTRB(8, 5, 0, 5),
                                 child: SearchList(
-                                  email: document?[index]['email'],
-                                  username: document?[index]['username'],
-                                  pictureID: document?[index]['pictureID'],
-                                  followers: document?[index]['followers'],
-                                  following: document?[index]['following'],
-                                  posts: document?[index]['posts'],
-                                  userID: document?[index]['userID'],
+                                  searchedUser: SearchedUser(
+                                    email: document?[index]['email'],
+                                    fullname: document?[index]['fullname'],
+                                    username: document?[index]['username'],
+                                    posts: document?[index]['posts'],
+                                    followers: document?[index]['followers'],
+                                    following: document?[index]['following'],
+                                    pictureID: document?[index]['pictureID'],
+                                    userID: document?[index]['userID'],
+                                    postURL: document?[index]['postURL'],
+                                  ),
                                 ),
                               );
-                            } else if (searchedUser == null) {
-                              return ListView.builder(
-                                itemCount: document?.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: EdgeInsets.fromLTRB(8, 5, 0, 5),
-                                    child: SearchList(
-                                      email: document?[index]['email'],
-                                      username: document?[index]['username'],
-                                      pictureID: document?[index]['pictureID'],
-                                      followers:
-                                          document?[index]['followers'].length,
-                                      following:
-                                          document?[index]['following'].length,
-                                      posts: document?[index]['posts'],
-                                      userID: document?[index]['userID'],
-                                    ),
-                                  );
-                                },
-                              );
                             }
-                            return Text('No user found...');
+                            return Center(
+                              child: Text('No user found'),
+                            );
                           });
                     }))
           ])),

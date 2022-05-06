@@ -1,18 +1,21 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FollowingFollowersWidget extends StatefulWidget {
   String? username;
   List? followers;
   List? following;
+  int? index;
 
-  FollowingFollowersWidget({
-    Key? key,
-    @required this.username,
-    @required this.followers,
-    @required this.following,
-  }) : super(key: key);
+  FollowingFollowersWidget(
+      {Key? key,
+      @required this.username,
+      @required this.followers,
+      @required this.following,
+      @required this.index})
+      : super(key: key);
 
   @override
   State<FollowingFollowersWidget> createState() =>
@@ -25,7 +28,7 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
     final args =
         ModalRoute.of(context)!.settings.arguments as FollowingFollowersWidget;
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: args.index!,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -55,11 +58,21 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                   ? Center(
                       child: Text('Currently no followers'),
                     )
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: 0,
-                      itemBuilder: (ctx, index) => Container(),
+                  : Expanded(
+                      child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .snapshots(),
+                          builder:
+                              (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: args.followers?.length,
+                              itemBuilder: (ctx, index) =>
+                                  Text(args.followers?[index]),
+                            );
+                          }),
                     )
             ]),
             Column(children: [
@@ -80,11 +93,21 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                   ? Center(
                       child: Text('Currently no following'),
                     )
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: 0,
-                      itemBuilder: (ctx, index) => Container(),
+                  : Expanded(
+                      child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .snapshots(),
+                          builder:
+                              (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: args.following?.length,
+                              itemBuilder: (ctx, index) =>
+                                  Text(args.following?[index]),
+                            );
+                          }),
                     )
             ]),
           ],

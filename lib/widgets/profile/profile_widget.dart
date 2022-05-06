@@ -1,32 +1,20 @@
 // ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables, must_be_immutable, avoid_print, avoid_function_literals_in_foreach_calls
 
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:igc2/screens/following_followers_screen.dart';
+import 'package:igc2/models/user.dart';
+import 'package:igc2/screens/profile/following_followers_screen.dart';
+import 'package:igc2/screens/profile/post_screen.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
+import 'package:igc2/widgets/profile/post_list_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
-  String? email;
-  String? username;
-  String? fullname;
-  String? pictureID;
-  List? followers;
-  List? following;
-  int? posts;
-  List listOfPosts = [];
+  SearchedUser user;
 
   ProfileWidget({
     Key? key,
-    @required this.email,
-    @required this.username,
-    @required this.fullname,
-    @required this.pictureID,
-    @required this.followers,
-    @required this.following,
-    @required this.posts,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -34,31 +22,15 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  File? profileImage;
-
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
   String? currentUserID = FirebaseAuth.instance.currentUser?.uid;
-
-  _loadUsers() {
-    FirebaseFirestore.instance
-        .collection('users')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if (doc['email'] == userEmail) {
-          print(doc["email"]);
-        }
-      });
-    });
-  }
+  var isGridView = true;
 
   @override
   Widget build(BuildContext context) {
-    List listOfPosts = [];
-    _loadUsers();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.username.toString()),
+        title: Text(widget.user.username.toString()),
         automaticallyImplyLeading: false,
       ),
       body: StreamBuilder(
@@ -70,7 +42,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             );
           }
           return Container(
-            child: userEmail == widget.email
+            child: userEmail == widget.user.email
                 ? Column(
                     children: [
                       Padding(
@@ -82,11 +54,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               child: CircleAvatar(
                                   radius: 50,
                                   backgroundImage: NetworkImage(
-                                      widget.pictureID.toString())),
+                                      widget.user.pictureID.toString())),
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.posts}\nPosts',
+                                '${widget.user.posts}\nPosts',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -97,7 +69,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.followers?.length.toString()}\nFollowers',
+                                '${widget.user.followers?.length.toString()}\nFollowers',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -108,15 +80,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 Navigator.pushNamed(
                                     context, FollowingFollowersScreen.routeName,
                                     arguments: FollowingFollowersWidget(
-                                      username: widget.username,
-                                      followers: widget.followers,
-                                      following: widget.following,
-                                    ));
+                                        username: widget.user.username,
+                                        followers: widget.user.followers,
+                                        following: widget.user.following,
+                                        index: 0));
                               },
                             ),
                             TextButton(
                               child: Text(
-                                '${widget.following?.length.toString()}\nFollowing',
+                                '${widget.user.following?.length.toString()}\nFollowing',
                                 textAlign: TextAlign.center,
                               ),
                               style: TextButton.styleFrom(
@@ -127,10 +99,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 Navigator.pushNamed(
                                     context, FollowingFollowersScreen.routeName,
                                     arguments: FollowingFollowersWidget(
-                                      username: widget.username,
-                                      followers: widget.followers,
-                                      following: widget.following,
-                                    ));
+                                        username: widget.user.username,
+                                        followers: widget.user.followers,
+                                        following: widget.user.following,
+                                        index: 1));
                               },
                             ),
                           ],
@@ -167,38 +139,36 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       ),
                       Flexible(
                         child: Column(children: [
-                          StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('posts')
-                                  .snapshots(),
-                              builder: (ctx,
-                                  AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-                                if (streamsnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                for (int i = 0;
-                                    i < streamsnapshot.data!.docs.length;
-                                    i++) {
-                                  if (currentUserID ==
-                                      streamsnapshot.data!.docs[i]['userID']) {
-                                    listOfPosts
-                                        .add(streamsnapshot.data!.docs[i]);
-                                  }
-                                }
-                                return Flexible(
-                                  child: GridView.count(
-                                    crossAxisCount: 3,
-                                    children: listOfPosts.map((e) {
-                                      return Center(
-                                        child: Image.network(e['picture']),
-                                      );
-                                    }).toList(),
-                                  ),
-                                );
-                              }),
+                          Flexible(
+                            child: GridView.count(
+                                crossAxisCount: 3,
+                                children: List.generate(
+                                    widget.user.postURL!.length,
+                                    (index) => InkWell(
+                                          onTap: () {
+                                            SearchedUser user = SearchedUser(
+                                                email: widget.user.email,
+                                                fullname: widget.user.fullname,
+                                                username: widget.user.username,
+                                                posts: widget.user.posts,
+                                                followers: widget.user.followers,
+                                                following: widget.user.following,
+                                                postURL: widget.user.postURL,
+                                                pictureID: widget.user.pictureID,
+                                                userID: widget.user.userID);
+                                            Navigator.pushNamed(
+                                                context, PostScreen.routeName,
+                                                arguments: ProfilePostListWidget(
+                                                  listLength: widget.user.posts!,
+                                                  indexToScroll: index,
+                                                  searchedUser: user,
+                                                ));
+                                          },
+                                          child: Image.network(
+                                            widget.user.postURL![index],
+                                          ),
+                                        ))),
+                          )
                         ]),
                       )
                     ],

@@ -2,20 +2,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:igc2/screens/new_post_screen.dart';
-import 'package:igc2/screens/profile_screen.dart';
-import 'package:igc2/screens/search_screen.dart';
+import 'package:igc2/screens/profile/new_post_screen.dart';
+import 'package:igc2/screens/profile/profile_screen.dart';
+import 'package:igc2/screens/search/search_screen.dart';
 
 class HomeWidget extends StatefulWidget {
   @override
   State<HomeWidget> createState() => _HomeWidgetState();
-
-  String? currentUserFullname;
-  String? currentUserUsername;
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
   @override

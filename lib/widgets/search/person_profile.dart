@@ -1,30 +1,18 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, avoid_function_literals_in_foreach_calls
-
+// ignore_for_file: prefer_const_constructors, avoid_print, avoid_function_literals_in_foreach_calls, must_be_immutable, prefer_typing_uninitialized_variables
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
 
-import '../../screens/following_followers_screen.dart';
+import '../../screens/profile/following_followers_screen.dart';
 
 class PersonProfile extends StatefulWidget {
-  final String? username;
-  final String? email;
-  final String? pictureID;
-  final List? followers;
-  final List? following;
-  final int? posts;
-  final String? userid;
+  SearchedUser? searchedUser;
 
-  const PersonProfile({
+  PersonProfile({
     Key? key,
-    this.username,
-    this.email,
-    this.pictureID,
-    this.followers,
-    this.following,
-    this.posts,
-    this.userid,
+    this.searchedUser,
   }) : super(key: key);
 
   @override
@@ -33,43 +21,84 @@ class PersonProfile extends StatefulWidget {
 
 class _PersonProfileState extends State<PersonProfile> {
   String? userID = FirebaseAuth.instance.currentUser?.uid;
-  var check = false;
+  var followCheck;
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  Future<void> unfollowUser() {
-    return users
-        .doc(userID)
-        .update({'followers': FieldValue.delete()})
-        .then((value) => print("User unfollowed"))
-        .catchError(
-            (error) => print("Failed to delete user's property: $error"));
-  }
-
-  Future<void> followUser(String followUser) {
-    widget.followers?.add(followUser);
-    print('username ${widget.username}');
-    print('email ${widget.email}');
-    print('pictureID ${widget.pictureID}');
-    print('followers ${widget.followers}');
-    print('following ${widget.following}');
-    print('posts ${widget.posts}');
-    print('userID ${widget.userid}');
-
-    return users.doc(userID).update({
-      'username': widget.username,
-      'email': widget.email,
-      'pictureID': widget.pictureID,
-      'followers': FieldValue.arrayUnion([widget.followers]),
-      'following': widget.followers,
-      'posts': widget.posts,
-      'userID': widget.userid,
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as PersonProfile;
+    List newList;
+    List listOfPosts = [];
+
+    updateUser() {
+      users.doc(args.searchedUser?.userID).update({
+        'email': args.searchedUser?.email,
+        'fullname': args.searchedUser?.fullname,
+        'username': args.searchedUser?.username,
+        'posts': args.searchedUser?.posts,
+        'followers': args.searchedUser?.followers,
+        'following': args.searchedUser?.following,
+        'pictureID': args.searchedUser?.pictureID,
+        'userID': args.searchedUser?.userID,
+      });
+    }
+
+    unfollowUser() {
+      args.searchedUser?.followers
+          ?.removeWhere(((element) => element == userID));
+      updateUser();
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          if (doc['userID'] == userID) {
+            newList = doc['following'];
+            newList.removeWhere(
+                ((element) => element == args.searchedUser?.userID));
+            users.doc(userID).update({
+              'email': doc['email'],
+              'fullname': doc['fullname'],
+              'username': doc['username'],
+              'posts': doc['posts'],
+              'followers': doc['followers'],
+              'following': newList,
+              'pictureID': doc['pictureID'],
+              'userID': doc['userID'],
+            });
+          }
+        });
+      });
+    }
+
+    followUser() {
+      args.searchedUser?.followers?.add(userID);
+
+      updateUser();
+      FirebaseFirestore.instance
+          .collection('users')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          if (doc['userID'] == userID) {
+            newList = doc['following'];
+            newList.add(args.searchedUser?.userID);
+            users.doc(userID).update({
+              'email': doc['email'],
+              'fullname': doc['fullname'],
+              'username': doc['username'],
+              'posts': doc['posts'],
+              'followers': doc['followers'],
+              'following': newList,
+              'pictureID': doc['pictureID'],
+              'userID': doc['userID'],
+            });
+          }
+        });
+      });
+    }
 
     FirebaseFirestore.instance
         .collection('users')
@@ -77,15 +106,15 @@ class _PersonProfileState extends State<PersonProfile> {
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         if (doc['followers'].contains(userID)) {
-          check = true;
+          followCheck = true;
         } else {
-          check = false;
+          followCheck = false;
         }
       });
     });
     return Scaffold(
         appBar: AppBar(
-          title: Text(args.username.toString()),
+          title: Text(args.searchedUser!.username.toString()),
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -100,13 +129,13 @@ class _PersonProfileState extends State<PersonProfile> {
                           padding: EdgeInsets.only(top: 25),
                           child: CircleAvatar(
                             radius: 50,
-                            backgroundImage:
-                                NetworkImage(args.pictureID.toString()),
+                            backgroundImage: NetworkImage(
+                                args.searchedUser!.pictureID.toString()),
                           ),
                         ),
                         TextButton(
                           child: Text(
-                            '${args.posts?.toString()}  \nPosts',
+                            '${args.searchedUser?.posts?.toString()}  \nPosts',
                             textAlign: TextAlign.center,
                           ),
                           style: TextButton.styleFrom(
@@ -117,7 +146,7 @@ class _PersonProfileState extends State<PersonProfile> {
                         ),
                         TextButton(
                           child: Text(
-                            '${args.followers?.length.toString()}  \nFollowers',
+                            '${args.searchedUser?.followers?.length.toString()}  \nFollowers',
                             textAlign: TextAlign.center,
                           ),
                           style: TextButton.styleFrom(
@@ -128,15 +157,16 @@ class _PersonProfileState extends State<PersonProfile> {
                             Navigator.pushNamed(
                                 context, FollowingFollowersScreen.routeName,
                                 arguments: FollowingFollowersWidget(
-                                  username: args.username,
-                                  followers: args.followers,
-                                  following: args.following,
+                                  username: args.searchedUser?.username,
+                                  followers: args.searchedUser?.followers,
+                                  following: args.searchedUser?.following,
+                                  index: 0,
                                 ));
                           },
                         ),
                         TextButton(
                           child: Text(
-                            '${args.posts?.toString()}  \nFollowing',
+                            '${args.searchedUser?.following?.length.toString()}  \nFollowing',
                             textAlign: TextAlign.center,
                           ),
                           style: TextButton.styleFrom(
@@ -147,9 +177,10 @@ class _PersonProfileState extends State<PersonProfile> {
                             Navigator.pushNamed(
                                 context, FollowingFollowersScreen.routeName,
                                 arguments: FollowingFollowersWidget(
-                                  username: args.username,
-                                  followers: args.followers,
-                                  following: args.following,
+                                  username: args.searchedUser?.username,
+                                  followers: args.searchedUser?.followers,
+                                  following: args.searchedUser?.following,
+                                  index: 1,
                                 ));
                           },
                         ),
@@ -177,10 +208,15 @@ class _PersonProfileState extends State<PersonProfile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          check
+                          args.searchedUser!.followers!.contains(userID)
                               ? Expanded(
                                   child: TextButton(
-                                    onPressed: unfollowUser,
+                                    onPressed: () {
+                                      setState(() {
+                                        followCheck != followCheck;
+                                        unfollowUser();
+                                      });
+                                    },
                                     child: Text('Unfollow'),
                                     style: TextButton.styleFrom(
                                       backgroundColor:
@@ -192,9 +228,10 @@ class _PersonProfileState extends State<PersonProfile> {
                               : Expanded(
                                   child: TextButton(
                                     onPressed: () {
-                                      print(
-                                          'EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE ${widget.userid}');
-                                      followUser(widget.userid.toString());
+                                      setState(() {
+                                        followCheck != followCheck;
+                                        followUser();
+                                      });
                                     },
                                     child: Text('Follow'),
                                     style: TextButton.styleFrom(
@@ -221,11 +258,49 @@ class _PersonProfileState extends State<PersonProfile> {
                   const SizedBox(
                     height: 30,
                   ),
-                  Column(
-                    children: const [
-                      Icon(Icons.error_outline),
-                      Text('This user currently has no pictures...')
-                    ],
+                  Flexible(
+                    child: Column(children: [
+                      StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('posts')
+                              .snapshots(),
+                          builder: (ctx,
+                              AsyncSnapshot<QuerySnapshot> streamsnapshot) {
+                            if (streamsnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            for (int i = 0;
+                                i < streamsnapshot.data!.docs.length;
+                                i++) {
+                              if (args.searchedUser?.userID ==
+                                  streamsnapshot.data!.docs[i]['userID']) {
+                                listOfPosts.add(streamsnapshot.data!.docs[i]);
+                              }
+                            }
+                            return Flexible(
+                              child: GridView.count(
+                                crossAxisCount: 3,
+                                children: listOfPosts.map((e) {
+                                  return InkWell(
+                                    onTap: () {
+                                      print(e['comments']);
+                                      print(e['description']);
+                                      print(e['likes']);
+                                      print(e['location']);
+                                      print(e['picture']);
+                                      print(e['userID']);
+
+                                    },
+                                    child: Image.network(e['picture']),
+                                  );
+                                }).toList(),
+                              ),
+                            );
+                          }),
+                    ]),
                   )
                 ],
               );
