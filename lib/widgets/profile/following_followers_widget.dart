@@ -1,20 +1,15 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:igc2/models/user.dart';
+import 'package:igc2/widgets/search/search_list.dart';
 
 class FollowingFollowersWidget extends StatefulWidget {
-  String? username;
-  List? followers;
-  List? following;
+  static const routeName = '/followers';
+  SearchedUser? user;
   int? index;
 
-  FollowingFollowersWidget(
-      {Key? key,
-      @required this.username,
-      @required this.followers,
-      @required this.following,
-      @required this.index})
+  FollowingFollowersWidget({Key? key, @required this.user, this.index})
       : super(key: key);
 
   @override
@@ -25,17 +20,16 @@ class FollowingFollowersWidget extends StatefulWidget {
 class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as FollowingFollowersWidget;
+    final args = ModalRoute.of(context)!.settings.arguments as FollowingFollowersWidget;
     return DefaultTabController(
       initialIndex: args.index!,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(args.username.toString()),
+          title: Text(args.user!.username.toString()),
           bottom: TabBar(tabs: [
-            Tab(text: '${args.followers?.length.toString()} followers'),
-            Tab(text: '${args.following?.length.toString()} following'),
+            Tab(text: '${args.user!.followers?.length.toString()} followers'),
+            Tab(text: '${args.user!.following?.length.toString()} following'),
           ]),
         ),
         body: TabBarView(
@@ -47,14 +41,13 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                   controller: null,
                   decoration: InputDecoration(
                       labelText: "Search followers",
-                      hintText: "Search followers",
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(25.0)))),
                 ),
               ),
-              args.followers == null
+              args.user!.followers == null
                   ? Center(
                       child: Text('Currently no followers'),
                     )
@@ -65,12 +58,24 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                               .snapshots(),
                           builder:
                               (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            final documents = snapshot.data?.docs;
                             return ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              itemCount: args.followers?.length,
-                              itemBuilder: (ctx, index) =>
-                                  Text(args.followers?[index]),
+                              itemCount: documents!.length,
+                              itemBuilder: (ctx, index) => args.user!.followers!.contains(documents[index]['userID'])
+                                  ? SearchList(
+                                      searchedUser: SearchedUser(
+                                          email: documents[index]['email'],
+                                          fullname: documents[index]['fullname'],
+                                          username: documents[index]['username'],
+                                          posts: documents[index]['posts'],
+                                          followers: documents[index]['followers'],
+                                          following: documents[index]['following'],
+                                          postURL: documents[index]['postURL'],
+                                          pictureID: documents[index]['pictureID'],
+                                          userID: documents[index]['userID']))
+                                  : Container(),
                             );
                           }),
                     )
@@ -82,14 +87,13 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                   controller: null,
                   decoration: InputDecoration(
                       labelText: "Search following",
-                      hintText: "Search following",
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(25.0)))),
                 ),
               ),
-              args.followers == null
+              args.user!.followers == null
                   ? Center(
                       child: Text('Currently no following'),
                     )
@@ -100,12 +104,24 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                               .snapshots(),
                           builder:
                               (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            final documents = snapshot.data?.docs;
                             return ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              itemCount: args.following?.length,
-                              itemBuilder: (ctx, index) =>
-                                  Text(args.following?[index]),
+                              itemCount: documents!.length,
+                              itemBuilder: (ctx, index) => args.user!.following!.contains(documents[index]['userID'])
+                                  ? SearchList(
+                                      searchedUser: SearchedUser(
+                                          email: documents[index]['email'],
+                                          fullname: documents[index]['fullname'],
+                                          username: documents[index]['username'],
+                                          posts: documents[index]['posts'],
+                                          followers: documents[index]['followers'],
+                                          following: documents[index]['following'],
+                                          postURL: documents[index]['postURL'],
+                                          pictureID: documents[index]['pictureID'],
+                                          userID: documents[index]['userID']))
+                                  : Container(),
                             );
                           }),
                     )

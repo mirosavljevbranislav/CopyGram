@@ -2,9 +2,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:igc2/screens/home_screen.dart';
+import 'package:igc2/screens/home/home_screen.dart';
 import 'package:igc2/screens/auth/registration_screen.dart';
-
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -26,39 +25,42 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   void signInUser(String? email, String? password) async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email!, password: password!);
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
       Navigator.pushNamed(context, HomeScreen.routeName);
-    }on FirebaseAuthException catch (e){
-      if (e.code == 'user-not-found' || e.code == 'wrong-password'){
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    content: Text('Invalid credentials.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => {Navigator.pop(context)},
-                        child: Text('Ok'),
-                      )
-                    ],
-                  ));
-      }else{
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: Text('Invalid credentials.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => {Navigator.pop(context)},
+                      child: Text('Ok'),
+                    )
+                  ],
+                ));
+      } else {
         showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    content: Text('Invalid credentials.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => {Navigator.pop(context)},
-                        child: Text('Ok'),
-                      )
-                    ],
-                  ));
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: Text('Invalid credentials.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => {Navigator.pop(context)},
+                      child: Text('Ok'),
+                    )
+                  ],
+                ));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Material(
       child: GestureDetector(
         onTap: () {
@@ -69,7 +71,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+          decoration: BoxDecoration(color: themeColor),
           padding: const EdgeInsets.only(top: 150),
           alignment: Alignment.topLeft,
           width: 150,
@@ -77,74 +79,113 @@ class _LoginWidgetState extends State<LoginWidget> {
           child: Column(
             children: [
               Container(
+                padding: EdgeInsets.only(bottom: 30),
                 alignment: Alignment.center,
+                child: Text(
+                  'CopyGram',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 60,
+                    fontFamily: 'DancingScript',
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(10),
-                child: Material(
-                  child: TextField(
-                    controller: usernameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
+                child: TextField(
+                  cursorColor: secondaryColor,
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                    fillColor: secondaryColor,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
                     ),
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: Material(
-                  child: TextField(
-                    obscureText: _isObscure,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.password),
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _isObscure = !_isObscure;
-                              });
-                            },
-                            icon: Icon(_isObscure
-                                ? Icons.visibility
-                                : Icons.visibility_off))),
+                width: MediaQuery.of(context).size.width,
+                child: TextField(
+                  cursorColor: secondaryColor,
+                  obscureText: _isObscure,
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    fillColor: secondaryColor,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.password),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
+                      icon: Icon(
+                          _isObscure ? Icons.visibility : Icons.visibility_off),
+                    ),
                   ),
+                ),
+              ),
+              Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: secondaryColor,
+                    
+                  ),
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(color: themeColor),
+                  ),
+                  onPressed: () {
+                    signInUser(
+                        usernameController.text, passwordController.text);
+                    clearFields();
+                  },
                 ),
               ),
               TextButton(
                 onPressed: () {
                   print('Forgot password pressed');
                 },
-                child: const Text(
+                child: Text(
                   'Forgot password?',
+                  style: TextStyle(color: secondaryColor),
                 ),
               ),
+              Expanded(child: Container()),
               Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  child: const Text('Login'),
-                  onPressed: () {
-                    signInUser(usernameController.text, passwordController.text);
-                    clearFields();
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(left: 50),
+                padding: const EdgeInsets.only(
+                    top: 10, left: 80, right: 10, bottom: 10),
                 child: Row(children: [
-                  const Text(
+                  Text(
                     'Don\'t have an account?',
-                    style: TextStyle(fontSize: 24),
+                    style: TextStyle(fontSize: 16, color: secondaryColor),
                   ),
                   TextButton(
                       onPressed: () {
                         Navigator.pushNamed(
                             context, RegistrationScreen.routeName);
-                        print('Sing in pressed');
                       },
-                      child: const Text('Sing in'))
+                      child: Text(
+                        'Sing up',
+                        style: TextStyle(fontSize: 24),
+                      ))
                 ]),
               ),
             ],

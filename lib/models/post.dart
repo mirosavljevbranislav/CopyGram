@@ -1,4 +1,6 @@
 class Post {
+  String? profilePictureID;
+  String? username;
   String? userID;
   String? postID;
   String? picture;
@@ -9,6 +11,8 @@ class Post {
   List? comments;
 
   Post({
+    this.profilePictureID,
+    this.username,
     this.userID,
     this.postID,
     this.picture,
@@ -22,6 +26,8 @@ class Post {
   Map<String, dynamic> toJson() => _postToJson(this);
 
   Map<String, dynamic> _postToJson(Post instance) => <String, dynamic>{
+        'profilePictureID': instance.profilePictureID,
+        'username': instance.username,
         'userID': instance.userID,
         'postID': instance.postID,
         'picture': instance.picture,

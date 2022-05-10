@@ -46,10 +46,13 @@ class _SearchListState extends State<SearchList> {
       },
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage:
-                NetworkImage(widget.searchedUser!.pictureID.toString()),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: CircleAvatar(
+              radius: 35,
+              backgroundImage:
+                  NetworkImage(widget.searchedUser!.pictureID.toString()),
+            ),
           ),
           SizedBox(width: 30),
           Text(widget.searchedUser!.username.toString()),

@@ -56,24 +56,34 @@ class _NewPostEditState extends State<NewPostEdit> {
     TaskSnapshot taskSnapshot = await uploadTask;
     var postUuid = Uuid().v4();
     String formatedDate = DateFormat('MMMM d,yyyy').format(DateTime.now());
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => setState(() {
-            fileName = value;
-            Post newPost = Post(
-                userID: userID,
-                postID: postUuid,
-                picture: fileName,
-                location: location,
-                description: desc,
-                likes: [],
-                comments: [],
-                pictureTakenAt: formatedDate);
-            final CollectionReference collection =
-                FirebaseFirestore.instance.collection("posts");
-            collection.doc(postUuid).set(newPost.toJson());
-            _addPostURL(fileName);
-          }),
-        );
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("userID", isEqualTo: userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((result) {
+        taskSnapshot.ref.getDownloadURL().then(
+              (value) => setState(() {
+                fileName = value;
+                Post newPost = Post(
+                    profilePictureID: result.data()['pictureID'],
+                    username: result.data()['username'],
+                    userID: userID,
+                    postID: postUuid,
+                    picture: fileName,
+                    location: location,
+                    description: desc,
+                    likes: [],
+                    comments: [],
+                    pictureTakenAt: formatedDate);
+                final CollectionReference collection =
+                    FirebaseFirestore.instance.collection("posts");
+                collection.doc(postUuid).set(newPost.toJson());
+                _addPostURL(fileName);
+              }),
+            );
+      });
+    });
     updateUser();
   }
 
