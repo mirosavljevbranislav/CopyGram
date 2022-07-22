@@ -39,6 +39,8 @@ class _SearchListState extends State<SearchList> {
                     followers: widget.searchedUser?.followers,
                     following: widget.searchedUser?.following,
                     pictureID: widget.searchedUser?.pictureID,
+                    stories: widget.searchedUser?.stories,
+                    viewedStories: widget.searchedUser?.viewedStories,
                     userID: widget.searchedUser?.userID,
                     postURL: widget.searchedUser!.postURL),
               ));

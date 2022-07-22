@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
@@ -73,6 +74,8 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                                           followers: documents[index]['followers'],
                                           following: documents[index]['following'],
                                           postURL: documents[index]['postURL'],
+                                          stories: documents[index]['stories'],
+                                          viewedStories: documents[index]['viewedStories'],
                                           pictureID: documents[index]['pictureID'],
                                           userID: documents[index]['userID']))
                                   : Container(),
@@ -119,6 +122,8 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                                           followers: documents[index]['followers'],
                                           following: documents[index]['following'],
                                           postURL: documents[index]['postURL'],
+                                          stories: documents[index]['stories'],
+                                          viewedStories: documents[index]['viewedStories'],
                                           pictureID: documents[index]['pictureID'],
                                           userID: documents[index]['userID']))
                                   : Container(),

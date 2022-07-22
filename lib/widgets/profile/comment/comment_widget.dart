@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../../../models/comment.dart';
 import '../../../models/post.dart';
-import '../../../models/user.dart';
 
 class CommentWidget extends StatefulWidget {
   Post? post;

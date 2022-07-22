@@ -1,18 +1,21 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class User {
-  String? email;
-  String? fullname;
-  String? username;
-  String? password;
-  int? posts;
-  List? followers;
-  List? following;
-  List? postURL;
-  String? pictureID;
-  String? userID;
+class User extends Equatable {
+  final String? email;
+  final String? fullname;
+  final String? username;
+  final String? password;
+  final int? posts;
+  final List? followers;
+  final List? following;
+  final List? postURL;
+  final List? stories;
+  final List? viewedStories;
+  final String? pictureID;
+  final String? userID;
 
-  User({
+  const User({
     @required this.email,
     @required this.fullname,
     @required this.username,
@@ -21,9 +24,28 @@ class User {
     @required this.followers,
     @required this.following,
     @required this.postURL,
+    @required this.stories,
+    @required this.viewedStories,
     @required this.pictureID,
     @required this.userID,
   });
+
+  static const empty = User(
+      email: '',
+      fullname: '',
+      username: '',
+      password: '',
+      posts: 0,
+      followers: [],
+      following: [],
+      postURL: [],
+      stories: [],
+      viewedStories: [],
+      pictureID: '',
+      userID: '');
+
+  bool get isEmpty => this == User.empty;
+  bool get isNotEmpty => this != User.empty;
 
   Map<String, dynamic> toJson() => _userToJson(this);
 
@@ -36,9 +58,14 @@ class User {
         'followers': instance.followers,
         'following': instance.following,
         'postURL': instance.postURL,
+        'stories': instance.stories,
+        'viewedStories': instance.viewedStories,
         'pictureID': instance.pictureID,
         'userID': instance.userID,
       };
+
+  @override
+  List<Object?> get props => [email, fullname, username, password, posts, followers, following, postURL, stories, viewedStories, pictureID, userID];
 }
 
 class SearchedUser {
@@ -49,6 +76,8 @@ class SearchedUser {
   List? followers;
   List? following;
   List? postURL;
+  List? stories;
+  List? viewedStories;
   String? pictureID;
   String? userID;
   SearchedUser({
@@ -59,6 +88,8 @@ class SearchedUser {
     @required this.followers,
     @required this.following,
     @required this.postURL,
+    @required this.stories,
+    @required this.viewedStories,
     @required this.pictureID,
     @required this.userID,
   });
@@ -73,6 +104,8 @@ class SearchedUser {
         'followers': instance.followers,
         'following': instance.following,
         'postURL': instance.postURL,
+        'stories': instance.stories,
+        'viewedStories': instance.viewedStories,
         'pictureID': instance.pictureID,
         'userID': instance.userID,
       };

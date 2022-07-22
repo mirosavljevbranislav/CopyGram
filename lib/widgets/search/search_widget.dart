@@ -52,6 +52,9 @@ class _SearchWidgetState extends State<SearchWidget> {
                       return ListView.builder(
                           itemCount: document?.length,
                           itemBuilder: (context, index) {
+                            if (searchedUser == null) {
+                              return Text('');
+                            }
                             if (document?[index]['username']
                                 .contains(searchedUser)) {
                               return Padding(
@@ -64,6 +67,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                                     posts: document?[index]['posts'],
                                     followers: document?[index]['followers'],
                                     following: document?[index]['following'],
+                                    stories: document?[index]['stories'],
+                                    viewedStories: document?[index]['viewedStories'],
                                     pictureID: document?[index]['pictureID'],
                                     userID: document?[index]['userID'],
                                     postURL: document?[index]['postURL'],
@@ -71,9 +76,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                                 ),
                               );
                             }
-                            return Center(
-                              child: Text('No user found'),
-                            );
+                            return Text('');
                           });
                     }))
           ])),

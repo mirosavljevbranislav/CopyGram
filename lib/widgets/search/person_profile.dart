@@ -61,14 +61,7 @@ class _PersonProfileState extends State<PersonProfile> {
             newList.removeWhere(
                 ((element) => element == args.searchedUser?.userID));
             users.doc(userID).update({
-              'email': doc['email'],
-              'fullname': doc['fullname'],
-              'username': doc['username'],
-              'posts': doc['posts'],
-              'followers': doc['followers'],
               'following': newList,
-              'pictureID': doc['pictureID'],
-              'userID': doc['userID'],
             });
           }
         });
@@ -88,14 +81,7 @@ class _PersonProfileState extends State<PersonProfile> {
             newList = doc['following'];
             newList.add(args.searchedUser?.userID);
             users.doc(userID).update({
-              'email': doc['email'],
-              'fullname': doc['fullname'],
-              'username': doc['username'],
-              'posts': doc['posts'],
-              'followers': doc['followers'],
               'following': newList,
-              'pictureID': doc['pictureID'],
-              'userID': doc['userID'],
             });
           }
         });
@@ -254,8 +240,7 @@ class _PersonProfileState extends State<PersonProfile> {
                                   onPressed: () {},
                                   child: const Text('Message'),
                                   style: TextButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).primaryColorLight,
+                                      backgroundColor: Theme.of(context).primaryColorLight,
                                       primary: Colors.black)),
                             ),
                           ],
@@ -291,46 +276,27 @@ class _PersonProfileState extends State<PersonProfile> {
                                                     print(
                                                         'LIST LENGTH ${listlength.length}');
                                                     SearchedUser user = SearchedUser(
-                                                        email: args
-                                                            .searchedUser!
-                                                            .email,
-                                                        fullname: args
-                                                            .searchedUser!
-                                                            .fullname,
-                                                        username: args
-                                                            .searchedUser!
-                                                            .username,
-                                                        posts: args
-                                                            .searchedUser!
-                                                            .posts,
-                                                        followers: args
-                                                            .searchedUser!
-                                                            .followers,
-                                                        following: args
-                                                            .searchedUser!
-                                                            .following,
-                                                        postURL: args
-                                                            .searchedUser!
-                                                            .postURL,
-                                                        pictureID: args
-                                                            .searchedUser!
-                                                            .pictureID,
-                                                        userID: args
-                                                            .searchedUser!
-                                                            .userID);
+                                                        email: args.searchedUser!.email,
+                                                        fullname: args.searchedUser!.fullname,
+                                                        username: args.searchedUser!.username,
+                                                        posts: args.searchedUser!.posts,
+                                                        followers: args.searchedUser!.followers,
+                                                        following: args.searchedUser!.following,
+                                                        postURL: args.searchedUser!.postURL,
+                                                        stories: args.searchedUser!.stories,
+                                                        viewedStories: args.searchedUser!.viewedStories,
+                                                        pictureID: args.searchedUser!.pictureID,
+                                                        userID: args.searchedUser!.userID);
                                                     Navigator.pushNamed(context,
                                                         PostScreen.routeName,
-                                                        arguments:
-                                                            ProfilePostListWidget(
-                                                          listLength:
-                                                              listlength.length,
+                                                        arguments: ProfilePostListWidget(
+                                                          listLength: listlength.length,
                                                           indexToScroll: index,
                                                           searchedUser: user,
                                                         ));
                                                   },
                                                   child: Image.network(
-                                                    args.searchedUser!
-                                                        .postURL![index],
+                                                    args.searchedUser!.postURL![index],
                                                   ),
                                                 ))),
                                   ),

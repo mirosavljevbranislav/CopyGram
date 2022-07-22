@@ -48,10 +48,30 @@ class _NewPostWidgetState extends State<NewPostWidget> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, NewPostEdit.routeName,
-                  arguments: NewPostEdit(
-                    imageFile: _imageFile,
-                  ));
+              if (_imageFile != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return NewPostEdit(
+                      imageFile: _imageFile,
+                    );
+                  }),
+                );
+              } else if (_imageFile == null) {
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          content: Text('You did not choose any image.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => {
+                                Navigator.pop(context),
+                              },
+                              child: Text('back'),
+                            )
+                          ],
+                        ));
+              }
             },
             icon: const Icon(Icons.arrow_right_alt),
           ),

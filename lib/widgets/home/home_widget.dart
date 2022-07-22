@@ -1,137 +1,164 @@
-// ignore_for_file: use_key_in_widget_constructors, avoid_print, prefer_const_constructors, must_be_immutable
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+// ignore_for_file: must_be_immutable, void_checks, avoid_function_literals_in_foreach_calls
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:igc2/screens/home/home_screen.dart';
-import 'package:igc2/screens/home/settings_screen.dart';
-import 'package:igc2/screens/profile/profile_screen.dart';
-import 'package:igc2/screens/search/search_screen.dart';
-import 'package:igc2/widgets/profile/post/single_post_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:igc2/blocs/auth/auth_bloc.dart';
+import 'package:igc2/widgets/home/story/no_story_widget.dart';
+import 'package:igc2/widgets/home/story/your_story_widget.dart';
 
 import '../../models/post.dart';
-import '../../screens/profile/new_post_screen.dart';
+import '../../models/user.dart';
+import '../profile/post/single_post_widget.dart';
 
-class HomeWidget extends StatefulWidget {
+class HomeTest extends StatefulWidget {
+  static const routeName = '/home';
+  HomeTest({Key? key}) : super(key: key);
+
+  static Page page() => MaterialPage<void>(child: HomeTest());
+
   @override
-  State<HomeWidget> createState() => _HomeWidgetState();
+  State<HomeTest> createState() => _HomeTestState();
 }
 
-class _HomeWidgetState extends State<HomeWidget> {
-  String? userEmail = FirebaseAuth.instance.currentUser?.email;
-
+class _HomeTestState extends State<HomeTest> {
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
+    final userID = context.select((AuthBloc bloc) => bloc.state.userID);
+    final following = [];
+    FirebaseFirestore.instance
+        .collection("users")
+        .where("userID", isEqualTo: userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((result) {
+        print('HERE');
+        print(result.data()['userID']);
+        following.add(result.data()['following']);
+      });
+    });
+    print(following.length);
     return Scaffold(
-      backgroundColor: themeColor,
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-        builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-          if (streamsnapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final documents = streamsnapshot.data?.docs;
-          return ListView.builder(
-            itemCount: documents?.length,
-            itemBuilder: (ctx, index) => Container(
-                padding: EdgeInsets.all(10),
-                child: SinglePostWidget(
-                  post: Post(
-                      profilePictureID: documents![index]['profilePictureID'],
-                      username: documents[index]['username'],
-                      userID: documents[index]['userID'],
-                      postID: documents[index]['postID'],
-                      picture: documents[index]['picture'],
-                      location: documents[index]['location'],
-                      description: documents[index]['description'],
-                      likes: documents[index]['likes'],
-                      comments: documents[index]['comments'],
-                      pictureTakenAt: documents[index]['pictureTakenAt']),
-                )),
-          );
-        },
-      ),
       appBar: AppBar(
-        title: Text(
+        backgroundColor: themeColor,
+        title: const Text(
           'CopyGram',
           style: TextStyle(fontFamily: 'DancingScript', fontSize: 34),
         ),
-        backgroundColor: themeColor,
-        automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.chat_outlined),
-          ),
+              icon: const Icon(Icons.chat_bubble_rounded), onPressed: () {}),
         ],
       ),
-      floatingActionButton: RawMaterialButton(
-        onPressed: () {
-          Navigator.pushNamed(context, NewPostScreen.routeName);
-        },
-        elevation: 2.0,
-        fillColor: Colors.white,
-        child: Icon(
-          Icons.add,
-          size: 35.0,
-        ),
-        padding: EdgeInsets.all(15.0),
-        shape: CircleBorder(),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
+      body: Container(
         color: themeColor,
-        shape: CircularNotchedRectangle(),
-        notchMargin: 5,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    HomeScreen.routeName) {
-                  Navigator.pushNamed(context, HomeScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.home),
-              color: Colors.white,
+        child: Column(children: [
+          Row(children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              color: themeColor,
+              height: 100,
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .snapshots(),
+                  builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
+                    if (streamsnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    final documents = streamsnapshot.data?.docs;
+                    for (int i = 0; i < documents!.length; i++) {
+                      if (documents[i]['userID'] == userID) {
+                        SearchedUser user = SearchedUser(
+                            email: documents[i]['email'],
+                            fullname: documents[i]['fullname'],
+                            username: documents[i]['username'],
+                            posts: documents[i]['posts'],
+                            followers: documents[i]['followers'],
+                            following: documents[i]['following'],
+                            postURL: documents[i]['postURL'],
+                            stories: documents[i]['stories'],
+                            viewedStories: documents[i]['viewedStories'],
+                            pictureID: documents[i]['pictureID'],
+                            userID: documents[i]['userID']);
+                        if (documents[i]['stories'].length == 0) {
+                          return NoStoryWidget(
+                            pictureID: documents[i]['pictureID'],
+                            secondaryColor: secondaryColor,
+                            user: user.toJson(),
+                          );
+                        }
+                      }
+                      SearchedUser user = SearchedUser(
+                          email: documents[i]['email'],
+                          fullname: documents[i]['fullname'],
+                          username: documents[i]['username'],
+                          posts: documents[i]['posts'],
+                          followers: documents[i]['followers'],
+                          following: documents[i]['following'],
+                          postURL: documents[i]['postURL'],
+                          stories: documents[i]['stories'],
+                          viewedStories: documents[i]['viewedStories'],
+                          pictureID: documents[i]['pictureID'],
+                          userID: documents[i]['userID']);
+                      YourStoryWidget(
+                          secondaryColor: secondaryColor, user: user);
+                    }
+                    return Container();
+                  }),
             ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    SearchScreen.routeName) {
-                  Navigator.pushNamed(context, SearchScreen.routeName);
+            following.isEmpty
+                ? const Text('No stories to show.')
+                : Row(
+                    children: [],
+                  )
+          ]),
+          const SizedBox(height: 1),
+          Expanded(
+            child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('posts').snapshots(),
+              builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
+                if (streamsnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
+                final documents = streamsnapshot.data?.docs;
+                return Container(
+                  color: themeColor,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: documents?.length,
+                    itemBuilder: (ctx, index) => Container(
+                        color: themeColor,
+                        padding: const EdgeInsets.all(10),
+                        child: SinglePostWidget(
+                          post: Post(
+                              profilePictureID: documents![index]
+                                  ['profilePictureID'],
+                              username: documents[index]['username'],
+                              userID: documents[index]['userID'],
+                              postID: documents[index]['postID'],
+                              picture: documents[index]['picture'],
+                              location: documents[index]['location'],
+                              description: documents[index]['description'],
+                              likes: documents[index]['likes'],
+                              comments: documents[index]['comments'],
+                              pictureTakenAt: documents[index]
+                                  ['pictureTakenAt']),
+                        )),
+                  ),
+                );
               },
-              icon: Icon(Icons.search),
-              color: Colors.white,
             ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    SettingsScreen.routeName) {
-                  Navigator.pushNamed(context, SettingsScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.settings),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    ProfileScreen.routeName) {
-                  Navigator.pushNamed(context, ProfileScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.person),
-              color: Colors.white,
-            ),
-          ],
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-        ),
+          ),
+        ]),
       ),
     );
   }

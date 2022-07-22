@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, prefer_const_constructors, avoid_print, non_constant_identifier_names
+// ignore_for_file: must_be_immutable, prefer_const_constructors, avoid_print, non_constant_identifier_names, avoid_function_literals_in_foreach_calls
 
 import 'dart:io';
 
@@ -14,10 +14,12 @@ import 'package:geolocator/geolocator.dart' as geo_loc;
 import 'package:geocoding/geocoding.dart' as geo_cod;
 import 'package:intl/intl.dart';
 
+import '../home/home_widget.dart';
+
 class NewPostEdit extends StatefulWidget {
   static const routeName = '/newpostedit';
   File? imageFile;
-  String? address = 'search';
+  String? address = '';
   late String description;
 
   final _captionController = TextEditingController();
@@ -85,6 +87,22 @@ class _NewPostEditState extends State<NewPostEdit> {
       });
     });
     updateUser();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: Text('Posted successfully!'),
+              actions: [
+                TextButton(
+                  onPressed: () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return HomeTest();
+                    }))
+                  },
+                  child: Text('Ok'),
+                )
+              ],
+            ));
   }
 
   Future<geo_loc.Position> _getGeoLocationPosition() async {
@@ -122,7 +140,6 @@ class _NewPostEditState extends State<NewPostEdit> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as NewPostEdit;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -133,7 +150,7 @@ class _NewPostEditState extends State<NewPostEdit> {
                 widget.description = widget._captionController.text;
               });
               _addNewPost(widget.description, widget.address.toString(),
-                  args.imageFile!);
+                  widget.imageFile!);
             },
           )
         ],
@@ -148,7 +165,7 @@ class _NewPostEditState extends State<NewPostEdit> {
               ),
             ),
             Image.file(
-              args.imageFile!,
+              widget.imageFile!,
               fit: BoxFit.cover,
               width: 50,
               height: 50,

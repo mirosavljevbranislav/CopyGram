@@ -40,14 +40,7 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
         querySnapshot.docs.forEach((doc) {
           if (doc['postID'] == postJson['postID']) {
             posts.doc(postJson['postID']).update({
-              'comments': doc['comments'],
-              'description': doc['description'],
               'likes': postJson['likes'],
-              'location': doc['location'],
-              'picture': doc['picture'],
-              'pictureTakenAt': doc['pictureTakenAt'],
-              'postID': doc['postID'],
-              'userID': doc['userID'],
             });
           }
         });
@@ -63,14 +56,7 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
         querySnapshot.docs.forEach((doc) {
           if (doc['postID'] == postJson['postID']) {
             posts.doc(postJson['postID']).update({
-              'comments': doc['comments'],
-              'description': doc['description'],
               'likes': postJson['likes'],
-              'location': doc['location'],
-              'picture': doc['picture'],
-              'pictureTakenAt': doc['pictureTakenAt'],
-              'postID': doc['postID'],
-              'userID': doc['userID'],
             });
           }
         });

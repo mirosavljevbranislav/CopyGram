@@ -78,6 +78,8 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         followers: [],
         following: [],
         postURL: [],
+        stories: [],
+        viewedStories: [],
         pictureID: fileName,
         userID: authResult.user?.uid.toString(),
       );
@@ -191,6 +193,8 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Material(
       child: GestureDetector(
         onTap: () {
@@ -201,12 +205,24 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+          decoration: BoxDecoration(color: themeColor),
           padding: const EdgeInsets.only(top: 50),
           alignment: Alignment.topLeft,
           width: 150,
           height: 100,
           child: Column(children: [
+            Container(
+              padding: EdgeInsets.only(bottom: 30),
+              alignment: Alignment.center,
+              child: Text(
+                'CopyGram',
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontSize: 60,
+                  fontFamily: 'DancingScript',
+                ),
+              ),
+            ),
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 10),
@@ -217,7 +233,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                 icon: const Icon(Icons.arrow_back),
                 label: const Text('Back'),
                 style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).focusColor,
+                  primary: themeColor,
                   elevation: 0,
                 ),
               ),
@@ -225,16 +241,17 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
-              child: Material(
-                child: Form(
-                  autovalidateMode: AutovalidateMode.always,
-                  child: TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
-                    ),
+              child: Form(
+                autovalidateMode: AutovalidateMode.always,
+                child: TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    fillColor: secondaryColor,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
                   ),
                 ),
               ),
@@ -242,74 +259,78 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
-              child: Material(
-                child: TextFormField(
-                  controller: fullnameController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Full name',
-                    prefixIcon: Icon(Icons.person),
-                  ),
+              child: TextField(
+                controller: fullnameController,
+                decoration: InputDecoration(
+                  fillColor: secondaryColor,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  labelText: 'Full name',
+                  prefixIcon: Icon(Icons.person),
                 ),
               ),
             ),
             Container(
               padding: const EdgeInsets.all(10),
-              child: Material(
-                child: TextFormField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    prefixIcon: Icon(Icons.person_outline),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              alignment: Alignment.center,
-              child: Material(
-                child: TextFormField(
-                  obscureText: _passwordIsObscure,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.password),
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordIsObscure = !_passwordIsObscure;
-                            });
-                          },
-                          icon: Icon(_passwordIsObscure
-                              ? Icons.visibility
-                              : Icons.visibility_off))),
+              child: TextField(
+                controller: usernameController,
+                decoration: InputDecoration(
+                  fillColor: secondaryColor,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  labelText: 'Username',
+                  prefixIcon: Icon(Icons.person_outline),
                 ),
               ),
             ),
             Container(
               padding: const EdgeInsets.all(10),
               alignment: Alignment.center,
-              child: Material(
-                child: TextFormField(
-                  obscureText: _confimartionIsObscure,
-                  controller: passwordConfirmationController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Confirm password',
+              child: TextField(
+                obscureText: _passwordIsObscure,
+                controller: passwordController,
+                decoration: InputDecoration(
+                    fillColor: secondaryColor,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    labelText: 'Password',
                     prefixIcon: Icon(Icons.password),
                     suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _confimartionIsObscure = !_confimartionIsObscure;
-                        });
-                      },
-                      icon: Icon(_confimartionIsObscure
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                    ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordIsObscure = !_passwordIsObscure;
+                          });
+                        },
+                        icon: Icon(_passwordIsObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off))),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              alignment: Alignment.center,
+              child: TextField(
+                obscureText: _confimartionIsObscure,
+                controller: passwordConfirmationController,
+                decoration: InputDecoration(
+                  fillColor: secondaryColor,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  labelText: 'Confirm password',
+                  prefixIcon: Icon(Icons.password),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _confimartionIsObscure = !_confimartionIsObscure;
+                      });
+                    },
+                    icon: Icon(_confimartionIsObscure
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                   ),
                 ),
               ),
@@ -319,9 +340,9 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
               child: _imageFile == null
                   ? ElevatedButton(
                       onPressed: pickImage,
-                      child: Icon(Icons.camera),
+                      child: Icon(Icons.camera, color: themeColor,),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
+                        primary: secondaryColor,
                         shape: const CircleBorder(),
                         fixedSize: const Size(80, 80),
                       ),

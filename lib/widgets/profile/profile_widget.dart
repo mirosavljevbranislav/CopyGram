@@ -4,15 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
-import 'package:igc2/screens/home/settings_screen.dart';
-import 'package:igc2/screens/profile/post_screen.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
 import 'package:igc2/widgets/profile/post/post_list_widget.dart';
 
-import '../../screens/home/home_screen.dart';
-import '../../screens/profile/new_post_screen.dart';
-import '../../screens/profile/profile_screen.dart';
-import '../../screens/search/search_screen.dart';
 
 class ProfileWidget extends StatefulWidget {
   SearchedUser user;
@@ -29,7 +23,6 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
   String? currentUserID = FirebaseAuth.instance.currentUser?.uid;
-  var isGridView = true;
   List listlength = [];
 
   @override
@@ -47,20 +40,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         automaticallyImplyLeading: false,
         backgroundColor: themeColor,
       ),
-      floatingActionButton: RawMaterialButton(
-        onPressed: () {
-          Navigator.pushNamed(context, NewPostScreen.routeName);
-        },
-        elevation: 2.0,
-        fillColor: Colors.white,
-        child: Icon(
-          Icons.add,
-          size: 35.0,
-        ),
-        padding: EdgeInsets.all(15.0),
-        shape: CircleBorder(),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
@@ -75,7 +55,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 ? Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 25),
+                        padding: EdgeInsets.only(top: 15),
                         child: Row(
                           children: [
                             Padding(
@@ -171,28 +151,24 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                             onTap: () {
                                               SearchedUser user = SearchedUser(
                                                   email: widget.user.email,
-                                                  fullname:
-                                                      widget.user.fullname,
-                                                  username:
-                                                      widget.user.username,
+                                                  fullname: widget.user.fullname,
+                                                  username: widget.user.username,
                                                   posts: widget.user.posts,
-                                                  followers:
-                                                      widget.user.followers,
-                                                  following:
-                                                      widget.user.following,
+                                                  followers: widget.user.followers,
+                                                  following: widget.user.following,
                                                   postURL: widget.user.postURL,
-                                                  pictureID:
-                                                      widget.user.pictureID,
+                                                  stories: widget.user.stories,
+                                                  viewedStories: widget.user.viewedStories,
+                                                  pictureID: widget.user.pictureID,
                                                   userID: widget.user.userID);
-                                              Navigator.pushNamed(
-                                                  context, PostScreen.routeName,
-                                                  arguments:
-                                                      ProfilePostListWidget(
-                                                    listLength:
-                                                        listlength.length,
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(builder:
+                                                   (context) {
+                                                    return ProfilePostListWidget(
+                                                    listLength: listlength.length,
                                                     indexToScroll: index,
-                                                    searchedUser: user,
-                                                  ));
+                                                    searchedUser: user);
+                                              })); 
                                             },
                                             child: Image.network(
                                               widget.user.postURL![index],
@@ -207,56 +183,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 : null,
           );
         },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: themeColor,
-        notchMargin: 5,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    HomeScreen.routeName) {
-                  Navigator.pushNamed(context, HomeScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.home),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    SearchScreen.routeName) {
-                  Navigator.pushNamed(context, SearchScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.search),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    SettingsScreen.routeName) {
-                  Navigator.pushNamed(context, SettingsScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.settings),
-              color: Colors.white,
-            ),
-            IconButton(
-              onPressed: () {
-                if (ModalRoute.of(context)?.settings.name !=
-                    ProfileScreen.routeName) {
-                  Navigator.pushNamed(context, ProfileScreen.routeName);
-                }
-              },
-              icon: Icon(Icons.person),
-              color: Colors.white,
-            ),
-          ],
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-        ),
       ),
     );
   }

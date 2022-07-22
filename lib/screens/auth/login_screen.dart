@@ -5,6 +5,8 @@ class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
   const LoginScreen({Key? key}) : super(key: key);
 
+  static Page page() => const MaterialPage<void>(child: LoginScreen());
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
