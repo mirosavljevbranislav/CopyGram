@@ -7,6 +7,7 @@ import 'package:igc2/blocs/auth/auth_bloc.dart';
 import 'package:igc2/widgets/home/story/no_story_widget.dart';
 import 'package:igc2/widgets/home/story/your_story_widget.dart';
 
+import '../../blocs/posts/posts_bloc.dart';
 import '../../models/post.dart';
 import '../../models/user.dart';
 import '../profile/post/single_post_widget.dart';
@@ -34,12 +35,9 @@ class _HomeTestState extends State<HomeTest> {
         .get()
         .then((value) {
       value.docs.forEach((result) {
-        print('HERE');
-        print(result.data()['userID']);
         following.add(result.data()['following']);
       });
     });
-    print(following.length);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themeColor,
@@ -67,9 +65,7 @@ class _HomeTestState extends State<HomeTest> {
                   builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
                     if (streamsnapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return const Center(child: CircularProgressIndicator());
                     }
                     final documents = streamsnapshot.data?.docs;
                     for (int i = 0; i < documents!.length; i++) {
@@ -113,53 +109,99 @@ class _HomeTestState extends State<HomeTest> {
                   }),
             ),
             following.isEmpty
-                ? const Text('No stories to show.')
+                ? const Text(
+                    'No stories',
+                    style: TextStyle(color: Colors.red),
+                  )
                 : Row(
                     children: [],
                   )
           ]),
           const SizedBox(height: 1),
           Expanded(
-            child: StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection('posts').snapshots(),
-              builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-                if (streamsnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                final documents = streamsnapshot.data?.docs;
+            child:
+                BlocBuilder<PostsBloc, PostState>(builder: ((context, state) {
+              if (state is PostsInitial) {
+                return const CircularProgressIndicator();
+              } else if (state is PostsLoaded) {
                 return Container(
                   color: themeColor,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: documents?.length,
+                    itemCount: state.posts.length,
                     itemBuilder: (ctx, index) => Container(
                         color: themeColor,
                         padding: const EdgeInsets.all(10),
                         child: SinglePostWidget(
                           post: Post(
-                              profilePictureID: documents![index]
+                              profilePictureID: state.posts[index]
                                   ['profilePictureID'],
-                              username: documents[index]['username'],
-                              userID: documents[index]['userID'],
-                              postID: documents[index]['postID'],
-                              picture: documents[index]['picture'],
-                              location: documents[index]['location'],
-                              description: documents[index]['description'],
-                              likes: documents[index]['likes'],
-                              comments: documents[index]['comments'],
-                              pictureTakenAt: documents[index]
+                              username: state.posts[index]['username'],
+                              userID: state.posts[index]['userID'],
+                              postID: state.posts[index]['postID'],
+                              picture: state.posts[index]['picture'],
+                              location: state.posts[index]['location'],
+                              description: state.posts[index]['description'],
+                              likes: state.posts[index]['likes'],
+                              comments: state.posts[index]['comments'],
+                              pictureTakenAt: state.posts[index]
                                   ['pictureTakenAt']),
                         )),
                   ),
                 );
-              },
-            ),
+              }
+              return Text(
+                'Error',
+                style: TextStyle(color: secondaryColor, fontSize: 13),
+              );
+            })),
           ),
         ]),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+// child: StreamBuilder(
+            //   stream:
+            //       FirebaseFirestore.instance.collection('posts').snapshots(),
+            //   builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
+            //     if (streamsnapshot.connectionState == ConnectionState.waiting) {
+            //       return const Center(
+            //         child: CircularProgressIndicator(),
+            //       );
+            //     }
+            //     final documents = streamsnapshot.data?.docs;
+            //     return Container(
+            //       color: themeColor,
+            //       child: ListView.builder(
+            //         shrinkWrap: true,
+            //         itemCount: documents?.length,
+            //         itemBuilder: (ctx, index) => Container(
+            //             color: themeColor,
+            //             padding: const EdgeInsets.all(10),
+            //             child: SinglePostWidget(
+            //               post: Post(
+            //                   profilePictureID: documents![index]
+            //                       ['profilePictureID'],
+            //                   username: documents[index]['username'],
+            //                   userID: documents[index]['userID'],
+            //                   postID: documents[index]['postID'],
+            //                   picture: documents[index]['picture'],
+            //                   location: documents[index]['location'],
+            //                   description: documents[index]['description'],
+            //                   likes: documents[index]['likes'],
+            //                   comments: documents[index]['comments'],
+            //                   pictureTakenAt: documents[index]
+            //                       ['pictureTakenAt']),
+            //             )),
+            //       ),
+            //     );
+            //   },
+            // ),

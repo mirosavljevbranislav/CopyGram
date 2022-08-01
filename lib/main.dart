@@ -5,8 +5,8 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:igc2/blocs/auth/auth_bloc.dart';
+import 'package:igc2/blocs/posts/posts_bloc.dart';
 import 'package:igc2/repository/auth_repository.dart';
-import 'package:igc2/screens/auth/registration_screen.dart';
 import 'config/routes.dart';
 import 'widgets/home/settings.dart';
 
@@ -29,8 +29,11 @@ class MyApp extends StatelessWidget {
       theme: SettingsWidget.light
           ? SettingsWidget.lightTheme
           : SettingsWidget.darkTheme,
-      home: BlocProvider(
-        create: (_) => AuthBloc(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
+          BlocProvider<PostsBloc>(create: (BuildContext context) => PostsBloc()..add(LoadingPosts()))
+        ],
         child: MyHomePage(),
       ),
     );
