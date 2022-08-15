@@ -69,18 +69,18 @@ class User extends Equatable {
 }
 
 class SearchedUser {
-  String? email;
-  String? fullname;
-  String? username;
-  int? posts;
-  List? followers;
-  List? following;
-  List? postURL;
-  List? stories;
-  List? viewedStories;
-  String? pictureID;
-  String? userID;
-  SearchedUser({
+  final String? email;
+  final String? fullname;
+  final String? username;
+  final int? posts;
+  final List? followers;
+  final List? following;
+  final List? postURL;
+  final List? stories;
+  final List? viewedStories;
+  final String? pictureID;
+  final String? userID;
+  const SearchedUser({
     @required this.email,
     @required this.fullname,
     @required this.username,
@@ -93,6 +93,19 @@ class SearchedUser {
     @required this.pictureID,
     @required this.userID,
   });
+
+  static const empty = SearchedUser(
+      email: '',
+      fullname: '',
+      username: '',
+      posts: 0,
+      followers: [],
+      following: [],
+      postURL: [],
+      stories: [],
+      viewedStories: [],
+      pictureID: '',
+      userID: '');
 
   Map<String, dynamic> toJson() => _userToJson(this);
 

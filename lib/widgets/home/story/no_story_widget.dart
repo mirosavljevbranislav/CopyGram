@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:igc2/widgets/home/story/add_story.dart';
 
 class NoStoryWidget extends StatefulWidget {
-  String? pictureID;
-  Color? secondaryColor;
-  Map<String, dynamic>? user;
+  String pictureID;
+  Color secondaryColor;
+  Map<dynamic, dynamic> user;
 
   NoStoryWidget({
-    this.pictureID,
-    this.secondaryColor,
-    this.user,
+    required this.pictureID,
+    required this.secondaryColor,
+    required this.user,
     Key? key,
   }) : super(key: key);
 
@@ -36,7 +36,7 @@ class _NoStoryWidgetState extends State<NoStoryWidget> {
                 ),
                 CircleAvatar(
                   radius: 35,
-                  backgroundImage: NetworkImage(widget.pictureID!),
+                  backgroundImage: NetworkImage(widget.pictureID),
                 ),
               ]),
             ),
@@ -50,8 +50,11 @@ class _NoStoryWidgetState extends State<NoStoryWidget> {
           ],
         ),
         onTap: () {
-          Navigator.pushNamed(context, AddStoryWidget.routeName,
-              arguments: AddStoryWidget(user: widget.user));
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddStoryWidget(
+              user: widget.user,
+            );
+          }));
         },
       ),
       Text(

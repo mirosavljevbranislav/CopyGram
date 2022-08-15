@@ -1,17 +1,18 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, avoid_function_literals_in_foreach_calls
+// ignore_for_file: prefer_const_constructors_in_immutables, avoid_function_literals_in_foreach_calls, must_be_immutable
 
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:igc2/blocs/story/story_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:path/path.dart' as path;
 
 class AddStoryWidget extends StatefulWidget {
-  static const routeName = '/addstory';
-  Map<String, dynamic>? user;
+  Map<dynamic, dynamic>? user;
   AddStoryWidget({
     this.user,
     Key? key,
@@ -43,10 +44,9 @@ class _AddStoryWidgetState extends State<AddStoryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as AddStoryWidget;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    _addStory(File imageID) async {
+    void _addStory(File imageID) async {
       String fileName = path.basename(imageID.path);
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('images/$fileName');
@@ -55,17 +55,17 @@ class _AddStoryWidgetState extends State<AddStoryWidget> {
       taskSnapshot.ref.getDownloadURL().then(
             (value) => setState(() {
               fileName = value;
-              args.user!['stories'].add(fileName);
+              widget.user!['stories'].add(fileName);
             }),
           );
       FirebaseFirestore.instance
-          .collection('posts')
-          .where('userID', isEqualTo: args.user!['userID'])
+          .collection('users')
+          .where('userID', isEqualTo: widget.user!['userID'])
           .get()
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((doc) {
-          users.doc(args.user!['userID']).update({
-            'stories': args.user!['stories'],
+          users.doc(widget.user!['userID']).update({
+            'stories': widget.user!['stories'],
           });
         });
       });
@@ -110,6 +110,10 @@ class _AddStoryWidgetState extends State<AddStoryWidget> {
                 child: TextButton(
                   onPressed: () {
                     _addStory(_imageFile!);
+                    context
+                        .read<StoryBloc>()
+                        .add(PostStory(imageID: _imageFile!));
+                    // Navigator.pop(context);
                   },
                   child: const Text('Post story!'),
                 )),

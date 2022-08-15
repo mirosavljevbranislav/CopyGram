@@ -4,12 +4,12 @@ enum AuthStatus { authenticated, unauthenticated }
 
 class AuthState extends Equatable {
   final AuthStatus status;
-  final String userID;
+  final SearchedUser user;
 
-  const AuthState({this.status = AuthStatus.unauthenticated, this.userID = ''});
+  const AuthState({this.status = AuthStatus.unauthenticated, this.user = SearchedUser.empty});
 
-  const AuthState.authenticated(String userID)
-      : this(status: AuthStatus.authenticated, userID: userID);
+  const AuthState.authenticated(user_model.SearchedUser user)
+      : this(status: AuthStatus.authenticated, user: user);
 
   const AuthState.unauthenticated()
       : this(
@@ -17,7 +17,7 @@ class AuthState extends Equatable {
         );
 
   @override
-  List<Object> get props => [status, userID];
+  List<Object> get props => [status, user];
 }
 
 class AppInitial extends AuthState {}

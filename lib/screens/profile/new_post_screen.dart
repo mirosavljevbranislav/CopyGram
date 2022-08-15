@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:igc2/widgets/new_post/new_post_widget.dart';
 
 class NewPostScreen extends StatefulWidget {
-  static const routeName = '/newpost';
   const NewPostScreen({Key? key}) : super(key: key);
 
   @override

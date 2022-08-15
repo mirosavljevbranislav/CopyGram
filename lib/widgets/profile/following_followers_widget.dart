@@ -21,116 +21,148 @@ class FollowingFollowersWidget extends StatefulWidget {
 class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as FollowingFollowersWidget;
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return DefaultTabController(
-      initialIndex: args.index!,
+      initialIndex: widget.index!,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(args.user!.username.toString()),
+          backgroundColor: themeColor,
+          title: Text(widget.user!.username.toString()),
           bottom: TabBar(tabs: [
-            Tab(text: '${args.user!.followers?.length.toString()} followers'),
-            Tab(text: '${args.user!.following?.length.toString()} following'),
+            Tab(text: '${widget.user!.followers?.length.toString()} followers'),
+            Tab(text: '${widget.user!.following?.length.toString()} following'),
           ]),
         ),
         body: TabBarView(
           children: [
-            Column(children: [
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  controller: null,
-                  decoration: InputDecoration(
-                      labelText: "Search followers",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(25.0)))),
+            Container(
+              color: themeColor,
+              child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: TextField(
+                    style: TextStyle(color: secondaryColor),
+                    controller: null,
+                    decoration: InputDecoration(
+                        fillColor: Colors.grey,
+                        filled: true,
+                        labelText: "Search followers",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)))),
+                  ),
                 ),
-              ),
-              args.user!.followers == null
-                  ? Center(
-                      child: Text('Currently no followers'),
-                    )
-                  : Expanded(
-                      child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .snapshots(),
-                          builder:
-                              (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            final documents = snapshot.data?.docs;
-                            return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: documents!.length,
-                              itemBuilder: (ctx, index) => args.user!.followers!.contains(documents[index]['userID'])
-                                  ? SearchList(
-                                      searchedUser: SearchedUser(
-                                          email: documents[index]['email'],
-                                          fullname: documents[index]['fullname'],
-                                          username: documents[index]['username'],
-                                          posts: documents[index]['posts'],
-                                          followers: documents[index]['followers'],
-                                          following: documents[index]['following'],
-                                          postURL: documents[index]['postURL'],
-                                          stories: documents[index]['stories'],
-                                          viewedStories: documents[index]['viewedStories'],
-                                          pictureID: documents[index]['pictureID'],
-                                          userID: documents[index]['userID']))
-                                  : Container(),
-                            );
-                          }),
-                    )
-            ]),
-            Column(children: [
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  controller: null,
-                  decoration: InputDecoration(
-                      labelText: "Search following",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(25.0)))),
+                widget.user!.followers == null
+                    ? Center(
+                        child: Text('Currently no followers'),
+                      )
+                    : Expanded(
+                        child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .snapshots(),
+                            builder:
+                                (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              final documents = snapshot.data?.docs;
+                              return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: documents!.length,
+                                itemBuilder: (ctx, index) => widget
+                                        .user!.followers!
+                                        .contains(documents[index]['userID'])
+                                    ? SearchList(
+                                        searchedUser: SearchedUser(
+                                            email: documents[index]['email'],
+                                            fullname: documents[index]
+                                                ['fullname'],
+                                            username: documents[index]
+                                                ['username'],
+                                            posts: documents[index]['posts'],
+                                            followers: documents[index]
+                                                ['followers'],
+                                            following: documents[index]
+                                                ['following'],
+                                            postURL: documents[index]['postURL'],
+                                            stories: documents[index]['stories'],
+                                            viewedStories: documents[index]
+                                                ['viewedStories'],
+                                            pictureID: documents[index]
+                                                ['pictureID'],
+                                            userID: documents[index]['userID']))
+                                    : Container(),
+                              );
+                            }),
+                      )
+              ]),
+            ),
+            Container(
+              color: themeColor,
+              child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: TextField(
+                    style: TextStyle(color: secondaryColor),
+                    controller: null,
+                    decoration: InputDecoration(
+                      fillColor: Colors.grey,
+                      filled: true,
+                        labelText: "Search following",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)))),
+                  ),
                 ),
-              ),
-              args.user!.followers == null
-                  ? Center(
-                      child: Text('Currently no following'),
-                    )
-                  : Expanded(
-                      child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .snapshots(),
-                          builder:
-                              (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            final documents = snapshot.data?.docs;
-                            return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: documents!.length,
-                              itemBuilder: (ctx, index) => args.user!.following!.contains(documents[index]['userID'])
-                                  ? SearchList(
-                                      searchedUser: SearchedUser(
-                                          email: documents[index]['email'],
-                                          fullname: documents[index]['fullname'],
-                                          username: documents[index]['username'],
-                                          posts: documents[index]['posts'],
-                                          followers: documents[index]['followers'],
-                                          following: documents[index]['following'],
-                                          postURL: documents[index]['postURL'],
-                                          stories: documents[index]['stories'],
-                                          viewedStories: documents[index]['viewedStories'],
-                                          pictureID: documents[index]['pictureID'],
-                                          userID: documents[index]['userID']))
-                                  : Container(),
-                            );
-                          }),
-                    )
-            ]),
+                widget.user!.followers == null
+                    ? Center(
+                        child: Text('Currently no following'),
+                      )
+                    : Expanded(
+                        child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .snapshots(),
+                            builder:
+                                (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              final documents = snapshot.data?.docs;
+                              return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: documents!.length,
+                                itemBuilder: (ctx, index) => widget
+                                        .user!.following!
+                                        .contains(documents[index]['userID'])
+                                    ? SearchList(
+                                        searchedUser: SearchedUser(
+                                            email: documents[index]['email'],
+                                            fullname: documents[index]
+                                                ['fullname'],
+                                            username: documents[index]
+                                                ['username'],
+                                            posts: documents[index]['posts'],
+                                            followers: documents[index]
+                                                ['followers'],
+                                            following: documents[index]
+                                                ['following'],
+                                            postURL: documents[index]
+                                                ['postURL'],
+                                            stories: documents[index]
+                                                ['stories'],
+                                            viewedStories: documents[index]
+                                                ['viewedStories'],
+                                            pictureID: documents[index]
+                                                ['pictureID'],
+                                            userID: documents[index]['userID']))
+                                    : Container(),
+                              );
+                            }),
+                      )
+              ]),
+            ),
           ],
         ),
       ),

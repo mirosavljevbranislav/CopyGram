@@ -7,7 +7,6 @@ import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
 import 'package:igc2/widgets/profile/post/post_list_widget.dart';
 
-
 class ProfileWidget extends StatefulWidget {
   SearchedUser user;
 
@@ -40,7 +39,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         automaticallyImplyLeading: false,
         backgroundColor: themeColor,
       ),
-
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
@@ -88,10 +86,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 textStyle: const TextStyle(fontSize: 15),
                               ),
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, FollowingFollowersWidget.routeName,
-                                    arguments: FollowingFollowersWidget(
-                                        user: widget.user, index: 0));
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return FollowingFollowersWidget(
+                                      user: widget.user, index: 0);
+                                }));
                               },
                             ),
                             TextButton(
@@ -104,10 +103,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 textStyle: const TextStyle(fontSize: 15),
                               ),
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, FollowingFollowersWidget.routeName,
-                                    arguments: FollowingFollowersWidget(
-                                        user: widget.user, index: 1));
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return FollowingFollowersWidget(
+                                      user: widget.user, index: 1);
+                                }));
                               },
                             ),
                           ],
@@ -145,7 +145,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             Flexible(
                               child: GridView.count(
                                   crossAxisCount: 3,
+                                  mainAxisSpacing: 3,
+                                  crossAxisSpacing: 3,
                                   children: List.generate(
+                                    
                                       widget.user.postURL!.length,
                                       (index) => InkWell(
                                             onTap: () {
@@ -162,13 +165,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                   pictureID: widget.user.pictureID,
                                                   userID: widget.user.userID);
                                               Navigator.push(context,
-                                                  MaterialPageRoute(builder:
-                                                   (context) {
+                                                  MaterialPageRoute( builder: (context) { 
                                                     return ProfilePostListWidget(
                                                     listLength: listlength.length,
                                                     indexToScroll: index,
                                                     searchedUser: user);
-                                              })); 
+                                              }));
                                             },
                                             child: Image.network(
                                               widget.user.postURL![index],

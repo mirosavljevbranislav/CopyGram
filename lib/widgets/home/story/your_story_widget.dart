@@ -21,6 +21,10 @@ class YourStoryWidget extends StatefulWidget {
 
 class _YourStoryWidgetState extends State<YourStoryWidget> {
   bool _checkStoryView() {
+    // if (widget.user!.viewedStories!.contains(widget.user!.stories)){
+    //   return true;
+    // }
+    // return false;
     for (int i = 0; i < widget.user!.stories!.length; i++) {
       for (int j = 0; j < widget.user!.viewedStories!.length; j++) {
         if (widget.user!.stories![i] == widget.user!.viewedStories![j]) {
@@ -63,8 +67,9 @@ class _YourStoryWidgetState extends State<YourStoryWidget> {
             for (int i = 0; i < widget.user!.stories!.length; i++) {
               _seeStory(widget.user!.stories![i]);
             }
-            Navigator.pushNamed(context, StoryPageView.routeName,
-                arguments: StoryPageView(user: widget.user));
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return StoryPageView(user: widget.user);
+            }));
           });
         },
         child: Container(
@@ -86,7 +91,7 @@ class _YourStoryWidgetState extends State<YourStoryWidget> {
         ),
       ),
       Text(
-        widget.user!.username!,
+        'Your story',
         style: TextStyle(fontSize: 14, color: widget.secondaryColor),
       )
     ]);

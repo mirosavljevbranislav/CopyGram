@@ -21,23 +21,25 @@ class _StoryPageViewState extends State<StoryPageView> {
   final storyController = StoryController();
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as StoryPageView;
-    if (args.user!.stories != null) {
+    if (widget.user!.stories != null) {
       return Material(
         child: Stack(children: [
           StoryView(
-            onComplete: () {},
+            onComplete: () {
+              // storyController.next();
+              Navigator.pop(context);
+            },
             storyItems: [
-              for (var i in args.user!.stories!)
+              for (var i in widget.user!.stories!)
                 StoryItem.pageImage(
                     url: i,
                     controller: storyController),
             ],
             controller: storyController,
             inline: false,
-            repeat: true,
+            repeat: false,
           ),
-          Text(args.user!.username!)
+          Text(widget.user!.username!)
         ]),
       );
     }

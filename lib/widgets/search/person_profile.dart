@@ -29,25 +29,25 @@ class _PersonProfileState extends State<PersonProfile> {
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
-    final args = ModalRoute.of(context)!.settings.arguments as PersonProfile;
+    // final args = ModalRoute.of(context)!.settings.arguments as PersonProfile;
     List newList;
     List listlength = [];
 
     updateUser() {
-      users.doc(args.searchedUser?.userID).update({
-        'email': args.searchedUser?.email,
-        'fullname': args.searchedUser?.fullname,
-        'username': args.searchedUser?.username,
-        'posts': args.searchedUser?.posts,
-        'followers': args.searchedUser?.followers,
-        'following': args.searchedUser?.following,
-        'pictureID': args.searchedUser?.pictureID,
-        'userID': args.searchedUser?.userID,
+      users.doc(widget.searchedUser?.userID).update({
+        'email': widget.searchedUser?.email,
+        'fullname': widget.searchedUser?.fullname,
+        'username': widget.searchedUser?.username,
+        'posts': widget.searchedUser?.posts,
+        'followers': widget.searchedUser?.followers,
+        'following': widget.searchedUser?.following,
+        'pictureID': widget.searchedUser?.pictureID,
+        'userID': widget.searchedUser?.userID,
       });
     }
 
     unfollowUser() {
-      args.searchedUser?.followers
+      widget.searchedUser?.followers
           ?.removeWhere(((element) => element == userID));
       updateUser();
 
@@ -59,7 +59,7 @@ class _PersonProfileState extends State<PersonProfile> {
           if (doc['userID'] == userID) {
             newList = doc['following'];
             newList.removeWhere(
-                ((element) => element == args.searchedUser?.userID));
+                ((element) => element == widget.searchedUser?.userID));
             users.doc(userID).update({
               'following': newList,
             });
@@ -69,7 +69,7 @@ class _PersonProfileState extends State<PersonProfile> {
     }
 
     followUser() {
-      args.searchedUser?.followers?.add(userID);
+      widget.searchedUser?.followers?.add(userID);
 
       updateUser();
       FirebaseFirestore.instance
@@ -79,7 +79,7 @@ class _PersonProfileState extends State<PersonProfile> {
         querySnapshot.docs.forEach((doc) {
           if (doc['userID'] == userID) {
             newList = doc['following'];
-            newList.add(args.searchedUser?.userID);
+            newList.add(widget.searchedUser?.userID);
             users.doc(userID).update({
               'following': newList,
             });
@@ -107,7 +107,7 @@ class _PersonProfileState extends State<PersonProfile> {
     });
     return Scaffold(
         appBar: AppBar(
-            title: Text(args.searchedUser!.username.toString()),
+            title: Text(widget.searchedUser!.username.toString()),
             backgroundColor: themeColor),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -125,12 +125,12 @@ class _PersonProfileState extends State<PersonProfile> {
                             child: CircleAvatar(
                               radius: 50,
                               backgroundImage: NetworkImage(
-                                  args.searchedUser!.pictureID.toString()),
+                                  widget.searchedUser!.pictureID.toString()),
                             ),
                           ),
                           TextButton(
                             child: Text(
-                              '${args.searchedUser?.posts?.toString()}  \nPosts',
+                              '${widget.searchedUser?.posts?.toString()}  \nPosts',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: secondaryColor),
                             ),
@@ -142,7 +142,7 @@ class _PersonProfileState extends State<PersonProfile> {
                           ),
                           TextButton(
                             child: Text(
-                                '${args.searchedUser?.followers?.length.toString()}  \nFollowers',
+                                '${widget.searchedUser?.followers?.length.toString()}  \nFollowers',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: secondaryColor)),
                             style: TextButton.styleFrom(
@@ -153,14 +153,14 @@ class _PersonProfileState extends State<PersonProfile> {
                               Navigator.pushNamed(
                                   context, FollowingFollowersWidget.routeName,
                                   arguments: FollowingFollowersWidget(
-                                    user: args.searchedUser,
+                                    user: widget.searchedUser,
                                     index: 0,
                                   ));
                             },
                           ),
                           TextButton(
                             child: Text(
-                                '${args.searchedUser?.following?.length.toString()}  \nFollowing',
+                                '${widget.searchedUser?.following?.length.toString()}  \nFollowing',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: secondaryColor)),
                             style: TextButton.styleFrom(
@@ -171,7 +171,7 @@ class _PersonProfileState extends State<PersonProfile> {
                               Navigator.pushNamed(
                                   context, FollowingFollowersWidget.routeName,
                                   arguments: FollowingFollowersWidget(
-                                    user: args.searchedUser,
+                                    user: widget.searchedUser,
                                     index: 1,
                                   ));
                             },
@@ -201,7 +201,7 @@ class _PersonProfileState extends State<PersonProfile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            args.searchedUser!.followers!.contains(userID)
+                            widget.searchedUser!.followers!.contains(userID)
                                 ? Expanded(
                                     child: TextButton(
                                       onPressed: () {
@@ -270,23 +270,21 @@ class _PersonProfileState extends State<PersonProfile> {
                                     child: GridView.count(
                                         crossAxisCount: 3,
                                         children: List.generate(
-                                            args.searchedUser!.postURL!.length,
+                                            widget.searchedUser!.postURL!.length,
                                             (index) => InkWell(
                                                   onTap: () {
-                                                    print(
-                                                        'LIST LENGTH ${listlength.length}');
                                                     SearchedUser user = SearchedUser(
-                                                        email: args.searchedUser!.email,
-                                                        fullname: args.searchedUser!.fullname,
-                                                        username: args.searchedUser!.username,
-                                                        posts: args.searchedUser!.posts,
-                                                        followers: args.searchedUser!.followers,
-                                                        following: args.searchedUser!.following,
-                                                        postURL: args.searchedUser!.postURL,
-                                                        stories: args.searchedUser!.stories,
-                                                        viewedStories: args.searchedUser!.viewedStories,
-                                                        pictureID: args.searchedUser!.pictureID,
-                                                        userID: args.searchedUser!.userID);
+                                                        email: widget.searchedUser!.email,
+                                                        fullname: widget.searchedUser!.fullname,
+                                                        username: widget.searchedUser!.username,
+                                                        posts: widget.searchedUser!.posts,
+                                                        followers: widget.searchedUser!.followers,
+                                                        following: widget.searchedUser!.following,
+                                                        postURL: widget.searchedUser!.postURL,
+                                                        stories: widget.searchedUser!.stories,
+                                                        viewedStories: widget.searchedUser!.viewedStories,
+                                                        pictureID: widget.searchedUser!.pictureID,
+                                                        userID: widget.searchedUser!.userID);
                                                     Navigator.pushNamed(context,
                                                         PostScreen.routeName,
                                                         arguments: ProfilePostListWidget(
@@ -296,7 +294,7 @@ class _PersonProfileState extends State<PersonProfile> {
                                                         ));
                                                   },
                                                   child: Image.network(
-                                                    args.searchedUser!.postURL![index],
+                                                    widget.searchedUser!.postURL![index],
                                                   ),
                                                 ))),
                                   ),

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
 import 'package:igc2/screens/profile/profile_screen.dart';
-import 'package:igc2/screens/searched_user_screen.dart';
 import 'package:igc2/widgets/search/person_profile.dart';
 
 class SearchList extends StatefulWidget {
@@ -24,32 +23,37 @@ class _SearchListState extends State<SearchList> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return GestureDetector(
       onTap: () {
         if (widget.searchedUser?.email == userEmail) {
-          Navigator.pushNamed(context, ProfileScreen.routeName);
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ProfileScreen();
+          }));
         } else {
-          Navigator.pushNamed(context, SearchedUserScreen.routeName,
-              arguments: PersonProfile(
-                searchedUser: SearchedUser(
-                    email: widget.searchedUser?.email,
-                    fullname: widget.searchedUser?.fullname,
-                    username: widget.searchedUser?.username.toString(),
-                    posts: widget.searchedUser?.posts,
-                    followers: widget.searchedUser?.followers,
-                    following: widget.searchedUser?.following,
-                    pictureID: widget.searchedUser?.pictureID,
-                    stories: widget.searchedUser?.stories,
-                    viewedStories: widget.searchedUser?.viewedStories,
-                    userID: widget.searchedUser?.userID,
-                    postURL: widget.searchedUser!.postURL),
-              ));
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return PersonProfile(
+              searchedUser: SearchedUser(
+                  email: widget.searchedUser?.email,
+                  fullname: widget.searchedUser?.fullname,
+                  username: widget.searchedUser?.username.toString(),
+                  posts: widget.searchedUser?.posts,
+                  followers: widget.searchedUser?.followers,
+                  following: widget.searchedUser?.following,
+                  pictureID: widget.searchedUser?.pictureID,
+                  stories: widget.searchedUser?.stories,
+                  viewedStories: widget.searchedUser?.viewedStories,
+                  userID: widget.searchedUser?.userID,
+                  postURL: widget.searchedUser!.postURL),
+            );
+          }));
         }
       },
       child: Row(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 10),
+            padding: EdgeInsets.only(left: 10, top: 7),
             child: CircleAvatar(
               radius: 35,
               backgroundImage:
@@ -57,19 +61,26 @@ class _SearchListState extends State<SearchList> {
             ),
           ),
           SizedBox(width: 30),
-          Text(widget.searchedUser!.username.toString()),
+          Text(
+            widget.searchedUser!.username.toString(),
+            style: TextStyle(color: secondaryColor),
+          ),
           SizedBox(
             width: 30,
           ),
           Column(
             children: [
               Text(
-                  '${widget.searchedUser?.followers?.length.toString()} followers'),
+                '${widget.searchedUser?.followers?.length.toString()} followers',
+                style: TextStyle(color: secondaryColor),
+              ),
               SizedBox(
                 height: 5,
               ),
               Text(
-                  '${widget.searchedUser?.following?.length.toString()} following'),
+                '${widget.searchedUser?.following?.length.toString()} following',
+                style: TextStyle(color: secondaryColor),
+              ),
             ],
           )
         ],
