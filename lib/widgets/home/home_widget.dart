@@ -15,9 +15,9 @@ import '../../models/user.dart';
 import '../profile/post/single_post_widget.dart';
 
 class HomeTest extends StatefulWidget {
-  HomeTest({Key? key}) : super(key: key);
+  const HomeTest({Key? key}) : super(key: key);
 
-  static Page page() => MaterialPage<void>(child: HomeTest());
+  static Page page() => const MaterialPage<void>(child: HomeTest());
 
   @override
   State<HomeTest> createState() => _HomeTestState();
@@ -31,8 +31,6 @@ class _HomeTestState extends State<HomeTest> {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
     final authStateUser = context.select((AuthBloc bloc) => bloc.state.user);
-    final homeBlocState =
-        context.select((HomeBloc homeBloc) => homeBloc.state.user);
     final following = [];
     FirebaseFirestore.instance
         .collection("users")
@@ -57,7 +55,7 @@ class _HomeTestState extends State<HomeTest> {
       ),
       body: PageView(children: [
         AddStoryWidget(
-          user: homeBlocState[0],
+          user: authStateUser.toJson(),
         ),
         Container(
           color: themeColor,
@@ -149,137 +147,3 @@ class _HomeTestState extends State<HomeTest> {
     );
   }
 }
-
-
-// child: Container(
-//                       alignment: Alignment.centerLeft,
-//                       color: themeColor,
-//                       height: 100,
-//                       child: homeState.user[0]['stories'].isEmpty
-//                           ? NoStoryWidget(
-//                               pictureID: homeState.user[0]['pictureID'],
-//                               secondaryColor: secondaryColor,
-//                               user: homeState.user[0],
-//                             )
-//                           : YourStoryWidget(
-//                               secondaryColor: secondaryColor,
-//                               user: SearchedUser(
-//                                 email: homeState.user[0]['email'],
-//                                 fullname: homeState.user[0]['fullname'],
-//                                 username: homeState.user[0]['username'],
-//                                 posts: homeState.user[0]['posts'],
-//                                 followers: homeState.user[0]['followers'],
-//                                 following: homeState.user[0]['following'],
-//                                 postURL: homeState.user[0]['postURL'],
-//                                 stories: homeState.user[0]['stories'],
-//                                 viewedStories: homeState.user[0]['viewedStories'],
-//                                 pictureID: homeState.user[0]['pictureID'],
-//                                 userID: homeState.user[0]['userID'],
-//                               )),
-//                     ),
-
-
-// Column(children: [
-//             Row(children: [
-//               Container(
-//                 alignment: Alignment.centerLeft,
-//                 color: themeColor,
-//                 height: 100,
-//                 child: StreamBuilder(
-//                     stream: FirebaseFirestore.instance
-//                         .collection('users')
-//                         .snapshots(),
-//                     builder:
-//                         (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-//                       if (streamsnapshot.connectionState ==
-//                           ConnectionState.waiting) {
-//                         return const Center(child: CircularProgressIndicator());
-//                       }
-//                       final documents = streamsnapshot.data?.docs;
-//                       for (int i = 0; i < documents!.length; i++) {
-//                         if (documents[i]['userID'] == userID) {
-//                           SearchedUser user = SearchedUser(
-//                               email: documents[i]['email'],
-//                               fullname: documents[i]['fullname'],
-//                               username: documents[i]['username'],
-//                               posts: documents[i]['posts'],
-//                               followers: documents[i]['followers'],
-//                               following: documents[i]['following'],
-//                               postURL: documents[i]['postURL'],
-//                               stories: documents[i]['stories'],
-//                               viewedStories: documents[i]['viewedStories'],
-//                               pictureID: documents[i]['pictureID'],
-//                               userID: documents[i]['userID']);
-//                           if (documents[i]['stories'].length == 0) {
-//                             return NoStoryWidget(
-//                               pictureID: documents[i]['pictureID'],
-//                               secondaryColor: secondaryColor,
-//                               user: user.toJson(),
-//                             );
-//                           }
-//                         }
-//                         SearchedUser user = SearchedUser(
-//                             email: documents[i]['email'],
-//                             fullname: documents[i]['fullname'],
-//                             username: documents[i]['username'],
-//                             posts: documents[i]['posts'],
-//                             followers: documents[i]['followers'],
-//                             following: documents[i]['following'],
-//                             postURL: documents[i]['postURL'],
-//                             stories: documents[i]['stories'],
-//                             viewedStories: documents[i]['viewedStories'],
-//                             pictureID: documents[i]['pictureID'],
-//                             userID: documents[i]['userID']);
-//                         YourStoryWidget(
-//                             secondaryColor: secondaryColor, user: user);
-//                       }
-//                       return Container();
-//                     }),
-//               ),
-//               following.isEmpty
-//                   ? const Text(
-//                       'No stories',
-//                       style: TextStyle(color: Colors.red),
-//                     )
-//                   : Row(
-//                       children: [],
-//                     )
-//             ]),
-//             const SizedBox(height: 1),
-//             Expanded(
-//               child:
-//                   BlocBuilder<HomeBloc, HomeState>(builder: ((context, state) {
-//                 if (state is HomeInitial) {
-//                   return const CircularProgressIndicator();
-//                 } else if (state is HomeLoaded) {
-//                   return Container(
-//                     color: themeColor,
-//                     child: ListView.builder(
-//                       shrinkWrap: true,
-//                       itemCount: state.posts.length,
-//                       itemBuilder: (ctx, index) => Container(
-//                           color: themeColor,
-//                           padding: const EdgeInsets.all(10),
-//                           child: SinglePostWidget(
-//                             post: Post(
-//                                 profilePictureID: state.posts[index]['profilePictureID'],
-//                                 username: state.posts[index]['username'],
-//                                 userID: state.posts[index]['userID'],
-//                                 postID: state.posts[index]['postID'],
-//                                 picture: state.posts[index]['picture'],
-//                                 location: state.posts[index]['location'],
-//                                 description: state.posts[index]['description'],
-//                                 likes: state.posts[index]['likes'],
-//                                 comments: state.posts[index]['comments'],
-//                                 pictureTakenAt: state.posts[index]['pictureTakenAt']),
-//                           )),
-//                     ),
-//                   );
-//                 }
-//                 return Text(
-//                   'Error',
-//                   style: TextStyle(color: secondaryColor, fontSize: 13),
-//                 );
-//               })),
-//             ),
-//           ]),

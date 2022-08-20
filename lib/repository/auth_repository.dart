@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../models/user.dart';
@@ -5,6 +6,7 @@ import '../models/user.dart';
 class AuthRepository {
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final _auth = firebase_auth.FirebaseAuth.instance;
+  final firebaseInstance = FirebaseFirestore.instance;
 
   AuthRepository({firebase_auth.FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
@@ -17,6 +19,30 @@ class AuthRepository {
       currentUser = user;
       return user;
     });
+  }
+
+  Future<SearchedUser?> getUserById(String userID) async {
+    final user = await firebaseInstance
+        .collection("users")
+        .where("userID", isEqualTo: userID)
+        .get()
+        .then((value) {
+      for (var result in value.docs) {
+        return SearchedUser(
+            email: result.data()['email'],
+            fullname: result.data()['fullname'],
+            username: result.data()['username'],
+            posts: result.data()['posts'],
+            followers: result.data()['followers'],
+            following: result.data()['following'],
+            postURL: result.data()['postURL'],
+            stories: result.data()['stories'],
+            viewedStories: result.data()['viewedStories'],
+            pictureID: result.data()['pictureID'],
+            userID: result.data()['userID']);
+      }
+    });
+  return user;
   }
 
   Future<void> singup({
@@ -49,6 +75,7 @@ class AuthRepository {
 
 extension on firebase_auth.User {
   User get toUser {
-    return User(userID: uid, email: email, username: displayName, pictureID: photoURL);
+    return User(
+        userID: uid, email: email, username: displayName, pictureID: photoURL);
   }
 }

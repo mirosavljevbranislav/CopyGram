@@ -5,14 +5,10 @@ enum HomeStatus { initial, loaded, failed }
 class HomeState extends Equatable {
   final HomeStatus status;
   final List<Map> posts;
-  final List<Map> user;
 
-  const HomeState(
-      {this.status = HomeStatus.initial,
-      this.posts = const [],
-      this.user = const []});
-  const HomeState.loaded(List<Map> posts, List<Map> userList)
-      : this(status: HomeStatus.loaded, posts: posts, user: userList);
+  const HomeState({this.status = HomeStatus.initial, this.posts = const []});
+  const HomeState.loaded(List<Map> posts)
+      : this(status: HomeStatus.loaded, posts: posts);
 
   @override
   List<Object> get props => [posts];

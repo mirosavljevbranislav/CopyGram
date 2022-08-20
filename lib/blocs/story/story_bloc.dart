@@ -8,7 +8,6 @@ part 'story_state.dart';
 
 class StoryBloc extends Bloc<StoryEvent, StoryState> {
   StoryBloc() : super(StoryInitial()) {
-    on<LoadingStory>(_loadStory);
     on<PostStory>(_postStory);
   }
 

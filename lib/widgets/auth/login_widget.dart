@@ -23,12 +23,14 @@ class _LoginWidgetState extends State<LoginWidget> {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
+    Color usernameColor = Colors.grey;
+    Color passwordColor = Colors.grey;
+    String usernameText = 'Email';
+    String passwordText = 'Password';
     return Material(
       child: GestureDetector(
         onTap: () {
@@ -38,36 +40,53 @@ class _LoginWidgetState extends State<LoginWidget> {
             currentFocus.unfocus();
           }
         },
-        child: Container(
-          decoration: BoxDecoration(color: themeColor),
-          padding: const EdgeInsets.only(top: 150),
-          alignment: Alignment.topLeft,
-          width: 150,
-          height: 100,
-          child: Column(
-            children: [
-              _Title(secondaryColor: secondaryColor),
-              _Email(
-                usernameController: usernameController,
-                secondaryColor: secondaryColor,
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthFailedState) {
+              usernameController.clear();
+              passwordController.clear();
+              usernameColor = Colors.red;
+              passwordColor = Colors.red;
+              usernameText = 'Wrong email';
+              passwordText = 'Wrong password';
+              FocusScope.of(context).requestFocus(FocusNode());
+            }
+            return Container(
+              decoration: BoxDecoration(color: themeColor),
+              padding: const EdgeInsets.only(top: 150),
+              alignment: Alignment.topLeft,
+              width: 150,
+              height: 100,
+              child: Column(
+                children: [
+                  _Title(secondaryColor: secondaryColor),
+                  _Email(
+                    usernameController: usernameController,
+                    secondaryColor: secondaryColor,
+                    usernameColor: usernameColor,
+                    usernameText: usernameText,
+                  ),
+                  _Password(
+                    secondaryColor: secondaryColor,
+                    usernameController: usernameController,
+                    passwordController: passwordController,
+                    isObscure: _isObscure,
+                    passwordColor: passwordColor,
+                    passwordText: passwordText,
+                  ),
+                  _Login(
+                    secondaryColor: secondaryColor,
+                    themeColor: themeColor,
+                    usernameController: usernameController,
+                    passwordController: passwordController,
+                  ),
+                  _ForgotPassword(secondaryColor: secondaryColor),
+                  Expanded(child: Container()),
+                  _SignUp(secondaryColor: secondaryColor),
+                ],
               ),
-              _Password(
-                secondaryColor: secondaryColor,
-                usernameController: usernameController,
-                passwordController: passwordController,
-                isObscure: _isObscure,
-              ),
-              _Login(
-                secondaryColor: secondaryColor,
-                themeColor: themeColor,
-                usernameController: usernameController,
-                passwordController: passwordController,
-              ),
-              _ForgotPassword(secondaryColor: secondaryColor),
-              Expanded(child: Container()),
-              _SignUp(secondaryColor: secondaryColor),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -98,8 +117,14 @@ class _Title extends StatelessWidget {
 class _Email extends StatelessWidget {
   TextEditingController usernameController = TextEditingController();
   Color secondaryColor;
+  Color usernameColor;
+  String usernameText;
 
-  _Email({required this.usernameController, required this.secondaryColor});
+  _Email(
+      {required this.usernameController,
+      required this.secondaryColor,
+      required this.usernameColor,
+      required this.usernameText});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -110,6 +135,8 @@ class _Email extends StatelessWidget {
         cursorColor: secondaryColor,
         controller: usernameController,
         decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: usernameColor, width: 3)),
           fillColor: secondaryColor,
           filled: true,
           border: OutlineInputBorder(
@@ -117,8 +144,11 @@ class _Email extends StatelessWidget {
               Radius.circular(10.0),
             ),
           ),
-          labelText: 'Email',
-          prefixIcon: Icon(Icons.email),
+          labelText: usernameText,
+          prefixIcon: Icon(
+            Icons.email,
+            color: usernameColor,
+          ),
         ),
       ),
     );
@@ -130,13 +160,17 @@ class _Password extends StatefulWidget {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isObscure;
+  Color passwordColor;
+  String passwordText;
 
   _Password(
       {Key? key,
       required this.secondaryColor,
       required this.usernameController,
       required this.passwordController,
-      required this.isObscure})
+      required this.isObscure,
+      required this.passwordColor,
+      required this.passwordText})
       : super(key: key);
 
   @override
@@ -154,13 +188,18 @@ class __PasswordState extends State<_Password> {
         obscureText: widget.isObscure,
         controller: widget.passwordController,
         decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: widget.passwordColor, width: 3)),
           fillColor: widget.secondaryColor,
           filled: true,
           border: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           ),
-          labelText: 'Password',
-          prefixIcon: Icon(Icons.password),
+          labelText: widget.passwordText,
+          prefixIcon: Icon(
+            Icons.password,
+            color: widget.passwordColor,
+          ),
           suffixIcon: IconButton(
             onPressed: () {
               setState(() {
@@ -203,23 +242,9 @@ class _Login extends StatelessWidget {
           style: TextStyle(color: themeColor),
         ),
         onPressed: () {
-          try {
-            context.read<AuthBloc>().add(AppLoginRequested(
-                email: usernameController.text,
-                password: passwordController.text));
-          } catch (_) {
-            showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                      content: Text('Invalid credentials.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => {Navigator.pop(context)},
-                          child: Text('Ok'),
-                        )
-                      ],
-                    ));
-          }
+          context.read<AuthBloc>().add(AppLoginRequested(
+              email: usernameController.text,
+              password: passwordController.text));
         },
       ),
     );

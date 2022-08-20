@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           : SettingsWidget.darkTheme,
       home: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc()),
+          BlocProvider<AuthBloc>(create: (BuildContext context) => AuthBloc(authRepository: _authRepository)),
           BlocProvider<HomeBloc>(create: (BuildContext context) => HomeBloc()..add(LoadingHome())),
           BlocProvider<ProfileBloc>(create: (BuildContext context) => ProfileBloc()..add(LoadingProfile())),
           BlocProvider<StoryBloc>(create: (BuildContext context) => StoryBloc())

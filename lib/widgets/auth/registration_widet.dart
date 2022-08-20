@@ -340,43 +340,49 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
               child: _imageFile == null
                   ? ElevatedButton(
                       onPressed: pickImage,
-                      child: Icon(Icons.camera, color: themeColor,),
+                      child: Icon(
+                        Icons.camera,
+                        color: themeColor,
+                      ),
                       style: ElevatedButton.styleFrom(
                         primary: secondaryColor,
                         shape: const CircleBorder(),
                         fixedSize: const Size(80, 80),
                       ),
                     )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.file(
-                        _imageFile!,
-                        fit: BoxFit.cover,
+                  : Container(
+                      height: 100,
+                      width: 100,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.file(
+                          _imageFile!,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
             ),
             Container(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               height: 50,
-              child: Material(
-                child: ElevatedButton(
-                  child: const Text('Sign up'),
-                  onPressed: () {
-                    if (passwordController.text ==
-                        passwordConfirmationController.text) {
-                      _getFieldText();
-                      _registerUser(emailController.text,
-                          passwordController.text, context);
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: secondaryColor),
+                child: Text('Sign up', style: TextStyle(color: themeColor),),
+                onPressed: () {
+                  if (passwordController.text ==
+                      passwordConfirmationController.text) {
+                    _getFieldText();
+                    _registerUser(
+                        emailController.text, passwordController.text, context);
 
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      _clearFields();
-                    } else if (passwordController.text !=
-                        passwordConfirmationController.text) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      _passwordMissMatch();
-                    }
-                  },
-                ),
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    _clearFields();
+                  } else if (passwordController.text !=
+                      passwordConfirmationController.text) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    _passwordMissMatch();
+                  }
+                },
               ),
             )
           ]),

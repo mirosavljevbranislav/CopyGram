@@ -20,7 +20,7 @@ class _NewHomeState extends State<NewHome> {
 
   Widget returnScreen(String? screenToReturn) {
     if (screenToReturn == '' || screenToReturn == 'home') {
-      return HomeTest();
+      return const HomeTest();
     } else if (screenToReturn == 'search') {
       return const SearchScreen();
     } else if (screenToReturn == 'settings') {
@@ -28,7 +28,7 @@ class _NewHomeState extends State<NewHome> {
     } else if (screenToReturn == 'profile') {
       return const ProfileScreen();
     }
-    return HomeTest();
+    return const HomeTest();
   }
 
   @override
@@ -36,22 +36,22 @@ class _NewHomeState extends State<NewHome> {
     Color? themeColor = Theme.of(context).primaryColor;
     return Scaffold(
       body: returnScreen(screenToShow),
-      floatingActionButton: RawMaterialButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const NewPostScreen();
-          }));
-        },
-        elevation: 2.0,
-        fillColor: Colors.white,
-        child: const Icon(
-          Icons.add,
-          size: 35.0,
-        ),
-        padding: const EdgeInsets.all(15.0),
-        shape: const CircleBorder(),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: RawMaterialButton(
+      //   onPressed: () {
+      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //       return const NewPostScreen();
+      //     }));
+      //   },
+      //   elevation: 2.0,
+      //   fillColor: Colors.white,
+      //   child: const Icon(
+      //     Icons.add,
+      //     size: 35.0,
+      //   ),
+      //   padding: const EdgeInsets.all(15.0),
+      //   shape: const CircleBorder(),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: themeColor,
         notchMargin: 5,
@@ -73,6 +73,15 @@ class _NewHomeState extends State<NewHome> {
                 });
               },
               icon: const Icon(Icons.search),
+              color: Colors.white,
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const NewPostScreen();
+                }));
+              },
+              icon: const Icon(Icons.add_box),
               color: Colors.white,
             ),
             IconButton(

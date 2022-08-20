@@ -39,12 +39,10 @@ class _CommentListWidgetState extends State<CommentListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as CommentListWidget;
     return Scaffold(
       appBar: AppBar(title: const Text('Comments')),
       body: SingleChildScrollView(
-        child: Column(children: [
+        child: Column(children: [ 
           StreamBuilder(
               stream:
                   FirebaseFirestore.instance.collection('comments').snapshots(),
@@ -54,7 +52,7 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                final documents = streamsnapshot.data?.docs;  
+                final documents = streamsnapshot.data?.docs;
 
                 return SizedBox(
                   height: MediaQuery.of(context).size.height / 1.21,
@@ -64,7 +62,7 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                     itemBuilder: (context, index) =>
                         documents[index]['postID'] == 'w'
                             ? CommentWidget(
-                                post: args.post,
+                                post: widget.post,
                                 comment: CommentModel(
                                   username: documents[index]['username'],
                                   commentID: documents[index]['commentID'],
@@ -72,7 +70,8 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                                   likes: documents[index]['likes'],
                                   pictureID: documents[index]['pictureID'],
                                   commentedAt: documents[index]['commentedAt'],
-                                  commentContent: documents[index]['commentContent'],
+                                  commentContent: documents[index]
+                                      ['commentContent'],
                                 ),
                               )
                             : Container(),
@@ -80,9 +79,12 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                 );
               }),
           TextFormField(
-            scrollPadding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 100),
+            // scrollPadding: EdgeInsets.only(
+            //     bottom: MediaQuery.of(context).viewInsets.bottom + 100),
             controller: null,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).viewInsets.bottom + 200,
           ),
         ]),
       ),

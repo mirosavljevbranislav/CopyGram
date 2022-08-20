@@ -13,5 +13,7 @@ List<Page> onGenerateAppViewPages(
       return [NewHome.page()];
     case AuthStatus.unauthenticated:
       return [LoginScreen.page()];
+    case AuthStatus.failed:
+      return [LoginScreen.page()];
   }
 }

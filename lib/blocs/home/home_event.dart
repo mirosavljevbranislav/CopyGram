@@ -13,10 +13,9 @@ class LoadingHome extends HomeEvent {}
 
 class LoadHome extends HomeEvent {
   List<Map> posts = <Map>[];
-  List<Map> userList = <Map>[];
 
-  LoadHome({required this.posts, required this.userList});
+  LoadHome({required this.posts});
 
   @override
-  List<Object> get props => [posts, userList];
+  List<Object> get props => [posts];
 }

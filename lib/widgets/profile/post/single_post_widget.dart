@@ -206,10 +206,15 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
         ),
         InkWell(
           onTap: () {
-            Navigator.pushNamed(context, CommentListWidget.routeName,
-                arguments: CommentListWidget(
-                  post: widget.post,
-                ));
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return CommentListWidget(
+                post: widget.post,
+              );
+            }));
+            // Navigator.pushNamed(context, CommentListWidget.routeName,
+            //     arguments: CommentListWidget(
+            //       post: widget.post,
+            //     ));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

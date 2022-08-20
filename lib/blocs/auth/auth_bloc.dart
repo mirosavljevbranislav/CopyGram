@@ -1,24 +1,18 @@
-// ignore_for_file: unused_import
-
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:igc2/blocs/home/home_bloc.dart';
-
-import '../../models/user.dart' as user_model;
+import 'package:igc2/repository/auth_repository.dart';
 import '../../models/user.dart';
-import '../../repository/auth_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AppInitial()) {
+  final AuthRepository authRepository;
+
+  AuthBloc({required this.authRepository}) : super(AppInitial()) {
     on<AppLoginRequested>(_loginUser);
     on<AppLogoutRequested>(_logoutUser);
   }
@@ -26,39 +20,40 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _logoutUser(AppLogoutRequested event, Emitter<AuthState> emit) {
     try {
       unawaited(firebase_auth.FirebaseAuth.instance.signOut());
-
       emit(const AuthState.unauthenticated());
     } catch (_) {}
   }
 
   void _loginUser(AppLoginRequested event, Emitter<AuthState> emit) async {
     try {
-      await firebase_auth.FirebaseAuth.instance.signInWithEmailAndPassword(
+      await authRepository.logInWithEmailAndPassword(
           email: event.email, password: event.password);
-
-      await FirebaseFirestore.instance
-          .collection("users")
-          .where("userID",
-              isEqualTo: firebase_auth.FirebaseAuth.instance.currentUser!.uid)
-          .get()
-          .then((value) {
-        for (var result in value.docs) {
-          emit(event.email.isNotEmpty || event.password.isNotEmpty
-              ? AuthState.authenticated(user_model.SearchedUser(
-                  email: result.data()['email'],
-                  fullname: result.data()['fullname'],
-                  username: result.data()['username'],
-                  posts: result.data()['posts'],
-                  followers: result.data()['followers'],
-                  following: result.data()['following'],
-                  postURL: result.data()['postURL'],
-                  stories: result.data()['stories'],
-                  viewedStories: result.data()['viewedStories'],
-                  pictureID: result.data()['pictureID'],
-                  userID: result.data()['userID']))
-              : const AuthState.unauthenticated());
-        }
-      });
-    } catch (_) {}
+      if (firebase_auth.FirebaseAuth.instance.currentUser != null) {
+        String currentUserID =
+            firebase_auth.FirebaseAuth.instance.currentUser!.uid;
+        SearchedUser? userTest =
+            await authRepository.getUserById(currentUserID);
+        emit((event.email.isNotEmpty || event.password.isNotEmpty) &&
+                userTest != null
+            ? AuthState.authenticated(SearchedUser(
+                email: userTest.email,
+                fullname: userTest.fullname,
+                username: userTest.username,
+                posts: userTest.posts,
+                followers: userTest.followers,
+                following: userTest.following,
+                postURL: userTest.postURL,
+                stories: userTest.stories,
+                viewedStories: userTest.viewedStories,
+                pictureID: userTest.pictureID,
+                userID: userTest.userID))
+            : const AuthState.unauthenticated());
+      } else {
+        emit(AuthFailedState());
+      }
+    } on firebase_auth.FirebaseAuthException catch (_) {
+      emit(AuthFailedState());
+      print('invalid email or password');
+    }
   }
 }

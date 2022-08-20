@@ -18,3 +18,6 @@ class AppLoginRequested extends AuthEvent {
   @override
   List<Object> get props => [email, password];
 }
+
+
+class AppLoginFailed extends AuthEvent {}
