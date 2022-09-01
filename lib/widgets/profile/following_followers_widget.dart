@@ -92,7 +92,8 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                                                 ['viewedStories'],
                                             pictureID: documents[index]
                                                 ['pictureID'],
-                                            userID: documents[index]['userID']))
+                                            userID: documents[index]['userID'],
+                                            description: documents[index]['description']))
                                     : Container(),
                               );
                             }),
@@ -156,7 +157,8 @@ class _FollowingFollowersWidgetState extends State<FollowingFollowersWidget> {
                                                 ['viewedStories'],
                                             pictureID: documents[index]
                                                 ['pictureID'],
-                                            userID: documents[index]['userID']))
+                                            userID: documents[index]['userID'],
+                                            description: documents[index]['description']))
                                     : Container(),
                               );
                             }),

@@ -33,7 +33,7 @@ class _HomeTestState extends State<HomeTest> {
     final authStateUser = context.select((AuthBloc bloc) => bloc.state.user);
     final following = [];
     FirebaseFirestore.instance
-        .collection("users")
+        .collection("users") 
         .where("userID", isEqualTo: authStateUser.userID)
         .get()
         .then((value) {
@@ -44,13 +44,13 @@ class _HomeTestState extends State<HomeTest> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themeColor,
-        title: const Text(
+        title: Text(
           'CopyGram',
-          style: TextStyle(fontFamily: 'DancingScript', fontSize: 34),
+          style: TextStyle(fontFamily: 'DancingScript', fontSize: 34, color: secondaryColor),
         ),
         actions: [
           IconButton(
-              icon: const Icon(Icons.chat_bubble_rounded), onPressed: () {}),
+              icon: Icon(Icons.chat_bubble_rounded, color: secondaryColor,), onPressed: () {}),
         ],
       ),
       body: PageView(children: [
@@ -62,7 +62,7 @@ class _HomeTestState extends State<HomeTest> {
           child: BlocBuilder<HomeBloc, HomeState>(
             builder: (((context, homeState) {
               if (homeState is HomeInitial) {
-                return const CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator(color: secondaryColor,));
               } else {
                 return Column(children: [
                   Row(children: [
@@ -91,6 +91,7 @@ class _HomeTestState extends State<HomeTest> {
                               viewedStories: authStateUser.viewedStories,
                               pictureID: authStateUser.pictureID,
                               userID: authStateUser.userID,
+                              description: authStateUser.description
                             ));
                       },
                     ),

@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +26,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
       backgroundColor: themeColor,
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text('Settings', style: TextStyle(color: secondaryColor)),
         backgroundColor: themeColor,
       ),
       body: SizedBox(
@@ -53,7 +52,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           TextButton(
             onPressed: () {
               context.read<AuthBloc>().add(AppLogoutRequested());
-
             },
             child: const Text(
               'Logout',

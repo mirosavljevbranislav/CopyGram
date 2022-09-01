@@ -19,7 +19,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _logoutUser(AppLogoutRequested event, Emitter<AuthState> emit) {
     try {
-      unawaited(firebase_auth.FirebaseAuth.instance.signOut());
+      unawaited(authRepository.logOut());
+      // unawaited(firebase_auth.FirebaseAuth.instance.signOut());
       emit(const AuthState.unauthenticated());
     } catch (_) {}
   }

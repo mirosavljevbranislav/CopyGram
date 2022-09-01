@@ -230,24 +230,27 @@ class _Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: secondaryColor,
-        ),
-        child: Text(
-          'Log In',
-          style: TextStyle(color: themeColor),
-        ),
-        onPressed: () {
-          context.read<AuthBloc>().add(AppLoginRequested(
-              email: usernameController.text,
-              password: passwordController.text));
-        },
-      ),
-    );
+        height: 60,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        child: ElevatedButton(
+          onPressed: () {
+            context.read<AuthBloc>().add(AppLoginRequested(
+                email: usernameController.text,
+                password: passwordController.text));
+          },
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.hovered)) {
+                  return Colors.redAccent;
+                } //<-- SEE HERE
+                return secondaryColor; // Defer to the widget's default.
+              },
+            ),
+          ),
+          child: const Text('Login'),
+        ));
   }
 }
 
@@ -291,7 +294,7 @@ class _SignUp extends StatelessWidget {
             },
             child: Text(
               'Sing up',
-              style: TextStyle(fontSize: 24, color: secondaryColor),
+              style: TextStyle(fontSize: 24, color: Colors.blue),
             ))
       ]),
     );

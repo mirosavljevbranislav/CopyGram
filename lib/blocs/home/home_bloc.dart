@@ -12,9 +12,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
  
   void _loadPosts(LoadingHome event, Emitter<HomeState> emit) async {
+    emit(HomeInitial());
     try {
       List<Map> emptyListToFill = <Map>[];
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('posts')
           .get()
           .then((querySnapshot) {

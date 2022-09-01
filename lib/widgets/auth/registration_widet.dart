@@ -82,6 +82,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         viewedStories: [],
         pictureID: fileName,
         userID: authResult.user?.uid.toString(),
+        description: 'Profile is new and this is default description.'
       );
 
       repository.addUser(newUser, authResult.user?.uid.toString());

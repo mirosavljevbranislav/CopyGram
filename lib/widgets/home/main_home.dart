@@ -34,24 +34,9 @@ class _NewHomeState extends State<NewHome> {
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Scaffold(
       body: returnScreen(screenToShow),
-      // floatingActionButton: RawMaterialButton(
-      //   onPressed: () {
-      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //       return const NewPostScreen();
-      //     }));
-      //   },
-      //   elevation: 2.0,
-      //   fillColor: Colors.white,
-      //   child: const Icon(
-      //     Icons.add,
-      //     size: 35.0,
-      //   ),
-      //   padding: const EdgeInsets.all(15.0),
-      //   shape: const CircleBorder(),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: themeColor,
         notchMargin: 5,
@@ -64,7 +49,7 @@ class _NewHomeState extends State<NewHome> {
                 });
               },
               icon: const Icon(Icons.home),
-              color: Colors.white,
+              color: secondaryColor,
             ),
             IconButton(
               onPressed: () {
@@ -73,7 +58,7 @@ class _NewHomeState extends State<NewHome> {
                 });
               },
               icon: const Icon(Icons.search),
-              color: Colors.white,
+              color: secondaryColor,
             ),
             IconButton(
               onPressed: () {
@@ -82,7 +67,7 @@ class _NewHomeState extends State<NewHome> {
                 }));
               },
               icon: const Icon(Icons.add_box),
-              color: Colors.white,
+              color: secondaryColor,
             ),
             IconButton(
               onPressed: () {
@@ -91,7 +76,7 @@ class _NewHomeState extends State<NewHome> {
                 });
               },
               icon: const Icon(Icons.settings),
-              color: Colors.white,
+              color: secondaryColor,
             ),
             IconButton(
               onPressed: () {
@@ -100,7 +85,7 @@ class _NewHomeState extends State<NewHome> {
                 });
               },
               icon: const Icon(Icons.person),
-              color: Colors.white,
+              color: secondaryColor,
             ),
           ],
           mainAxisSize: MainAxisSize.max,

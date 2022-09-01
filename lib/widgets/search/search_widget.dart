@@ -78,11 +78,11 @@ class _SearchWidgetState extends State<SearchWidget> {
                                       followers: document?[index]['followers'],
                                       following: document?[index]['following'],
                                       stories: document?[index]['stories'],
-                                      viewedStories: document?[index]
-                                          ['viewedStories'],
+                                      viewedStories: document?[index]['viewedStories'],
                                       pictureID: document?[index]['pictureID'],
                                       userID: document?[index]['userID'],
                                       postURL: document?[index]['postURL'],
+                                      description: document?[index]['description'],
                                     ),
                                   ),
                                 );

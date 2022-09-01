@@ -11,15 +11,6 @@ class AuthRepository {
   AuthRepository({firebase_auth.FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
-  var currentUser;
-
-  Stream<User> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      final user = firebaseUser == null ? User.empty : firebaseUser.toUser;
-      currentUser = user;
-      return user;
-    });
-  }
 
   Future<SearchedUser?> getUserById(String userID) async {
     final user = await firebaseInstance
@@ -39,7 +30,8 @@ class AuthRepository {
             stories: result.data()['stories'],
             viewedStories: result.data()['viewedStories'],
             pictureID: result.data()['pictureID'],
-            userID: result.data()['userID']);
+            userID: result.data()['userID'],
+            description: result.data()['description']);
       }
     });
   return user;
@@ -52,7 +44,6 @@ class AuthRepository {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      // await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     } catch (_) {}
   }
 
@@ -73,9 +64,4 @@ class AuthRepository {
   }
 }
 
-extension on firebase_auth.User {
-  User get toUser {
-    return User(
-        userID: uid, email: email, username: displayName, pictureID: photoURL);
-  }
-}
+

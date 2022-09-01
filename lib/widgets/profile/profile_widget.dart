@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
+import 'package:igc2/widgets/profile/edit_profile.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
 import 'package:igc2/widgets/profile/post/post_list_widget.dart';
 
@@ -35,7 +36,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.user.username.toString()),
+        title: Text(
+          widget.user.username.toString(),
+          style: TextStyle(color: secondaryColor),
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: themeColor,
       ),
@@ -129,7 +133,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         padding: EdgeInsets.only(left: 5, right: 5),
                         width: double.infinity,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return EditProfile(
+                                user: widget.user,
+                              );
+                            }));
+                          },
                           child: Text('Edit profile'),
                           style: TextButton.styleFrom(
                             backgroundColor: secondaryColor,
@@ -148,26 +159,29 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   mainAxisSpacing: 3,
                                   crossAxisSpacing: 3,
                                   children: List.generate(
-                                    
                                       widget.user.postURL!.length,
                                       (index) => InkWell(
                                             onTap: () {
                                               SearchedUser user = SearchedUser(
-                                                  email: widget.user.email,
-                                                  fullname: widget.user.fullname,
-                                                  username: widget.user.username,
-                                                  posts: widget.user.posts,
-                                                  followers: widget.user.followers,
-                                                  following: widget.user.following,
-                                                  postURL: widget.user.postURL,
-                                                  stories: widget.user.stories,
-                                                  viewedStories: widget.user.viewedStories,
-                                                  pictureID: widget.user.pictureID,
-                                                  userID: widget.user.userID);
+                                                email: widget.user.email,
+                                                fullname: widget.user.fullname,
+                                                username: widget.user.username,
+                                                posts: widget.user.posts,
+                                                followers: widget.user.followers,
+                                                following: widget.user.following,
+                                                postURL: widget.user.postURL,
+                                                stories: widget.user.stories,
+                                                viewedStories: widget.user.viewedStories,
+                                                pictureID: widget.user.pictureID,
+                                                userID: widget.user.userID,
+                                                description:widget.user.description,
+                                              );
                                               Navigator.push(context,
-                                                  MaterialPageRoute( builder: (context) { 
-                                                    return ProfilePostListWidget(
-                                                    listLength: listlength.length,
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return ProfilePostListWidget(
+                                                    listLength:
+                                                        listlength.length,
                                                     indexToScroll: index,
                                                     searchedUser: user);
                                               }));

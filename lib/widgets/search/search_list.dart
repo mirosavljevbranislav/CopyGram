@@ -35,9 +35,9 @@ class _SearchListState extends State<SearchList> {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return PersonProfile(
               searchedUser: SearchedUser(
-                  email: widget.searchedUser?.email,
-                  fullname: widget.searchedUser?.fullname,
-                  username: widget.searchedUser?.username.toString(),
+                  email: widget.searchedUser!.email,
+                  fullname: widget.searchedUser!.fullname,
+                  username: widget.searchedUser!.username.toString(),
                   posts: widget.searchedUser?.posts,
                   followers: widget.searchedUser?.followers,
                   following: widget.searchedUser?.following,
@@ -45,7 +45,8 @@ class _SearchListState extends State<SearchList> {
                   stories: widget.searchedUser?.stories,
                   viewedStories: widget.searchedUser?.viewedStories,
                   userID: widget.searchedUser?.userID,
-                  postURL: widget.searchedUser!.postURL),
+                  postURL: widget.searchedUser!.postURL,
+                  description: widget.searchedUser!.description),
             );
           }));
         }

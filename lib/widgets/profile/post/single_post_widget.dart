@@ -211,10 +211,6 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
                 post: widget.post,
               );
             }));
-            // Navigator.pushNamed(context, CommentListWidget.routeName,
-            //     arguments: CommentListWidget(
-            //       post: widget.post,
-            //     ));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

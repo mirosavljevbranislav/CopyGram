@@ -43,6 +43,7 @@ class _PersonProfileState extends State<PersonProfile> {
         'following': widget.searchedUser?.following,
         'pictureID': widget.searchedUser?.pictureID,
         'userID': widget.searchedUser?.userID,
+        'description': widget.searchedUser?.description,
       });
     }
 
@@ -240,8 +241,9 @@ class _PersonProfileState extends State<PersonProfile> {
                                   onPressed: () {},
                                   child: const Text('Message'),
                                   style: TextButton.styleFrom(
-                                      backgroundColor: Theme.of(context).primaryColorLight,
-                                      primary: Colors.black)),
+                                      backgroundColor:
+                                          Theme.of(context).primaryColorLight,
+                                      primary: themeColor)),
                             ),
                           ],
                         ),
@@ -270,7 +272,8 @@ class _PersonProfileState extends State<PersonProfile> {
                                     child: GridView.count(
                                         crossAxisCount: 3,
                                         children: List.generate(
-                                            widget.searchedUser!.postURL!.length,
+                                            widget
+                                                .searchedUser!.postURL!.length,
                                             (index) => InkWell(
                                                   onTap: () {
                                                     SearchedUser user = SearchedUser(
@@ -284,17 +287,21 @@ class _PersonProfileState extends State<PersonProfile> {
                                                         stories: widget.searchedUser!.stories,
                                                         viewedStories: widget.searchedUser!.viewedStories,
                                                         pictureID: widget.searchedUser!.pictureID,
-                                                        userID: widget.searchedUser!.userID);
+                                                        userID: widget.searchedUser!.userID,
+                                                        description: widget.searchedUser!.description);
                                                     Navigator.pushNamed(context,
                                                         PostScreen.routeName,
-                                                        arguments: ProfilePostListWidget(
-                                                          listLength: listlength.length,
+                                                        arguments:
+                                                            ProfilePostListWidget(
+                                                          listLength:
+                                                              listlength.length,
                                                           indexToScroll: index,
                                                           searchedUser: user,
                                                         ));
                                                   },
                                                   child: Image.network(
-                                                    widget.searchedUser!.postURL![index],
+                                                    widget.searchedUser!
+                                                        .postURL![index],
                                                   ),
                                                 ))),
                                   ),

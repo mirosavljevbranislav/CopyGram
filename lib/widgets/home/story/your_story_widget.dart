@@ -38,6 +38,8 @@ class _YourStoryWidgetState extends State<YourStoryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     Map<String, dynamic> userJson = widget.user!.toJson();
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
@@ -81,7 +83,7 @@ class _YourStoryWidgetState extends State<YourStoryWidget> {
             ),
             CircleAvatar(
               radius: 37,
-              backgroundColor: Colors.black,
+              backgroundColor: themeColor,
             ),
             CircleAvatar(
               radius: 35,

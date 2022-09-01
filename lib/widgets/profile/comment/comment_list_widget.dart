@@ -8,16 +8,10 @@ import 'package:igc2/widgets/profile/comment/comment_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../models/post.dart';
-import '../../../models/user.dart';
 
 class CommentListWidget extends StatefulWidget {
-  static const routeName = '/comment';
-  SearchedUser?
-      user; // passing whole user just in case, but only userID is needed currently
-  Post?
-      post; // passing whole post just in case, but only postID is needed currently
+  Post? post; 
   CommentListWidget({
-    this.user,
     this.post,
     Key? key,
   }) : super(key: key);
@@ -79,6 +73,7 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                 );
               }),
           TextFormField(
+            decoration: InputDecoration(labelText: 'Add new comment'),
             // scrollPadding: EdgeInsets.only(
             //     bottom: MediaQuery.of(context).viewInsets.bottom + 100),
             controller: null,

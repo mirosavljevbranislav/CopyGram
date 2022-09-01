@@ -14,6 +14,7 @@ class User extends Equatable {
   final List? viewedStories;
   final String? pictureID;
   final String? userID;
+  final String? description;
 
   const User({
     @required this.email,
@@ -28,6 +29,7 @@ class User extends Equatable {
     @required this.viewedStories,
     @required this.pictureID,
     @required this.userID,
+    @required this.description,
   });
 
   static const empty = User(
@@ -42,7 +44,8 @@ class User extends Equatable {
       stories: [],
       viewedStories: [],
       pictureID: '',
-      userID: '');
+      userID: '',
+      description: '');
 
   bool get isEmpty => this == User.empty;
   bool get isNotEmpty => this != User.empty;
@@ -62,10 +65,25 @@ class User extends Equatable {
         'viewedStories': instance.viewedStories,
         'pictureID': instance.pictureID,
         'userID': instance.userID,
+        'description': instance.description,
       };
 
   @override
-  List<Object?> get props => [email, fullname, username, password, posts, followers, following, postURL, stories, viewedStories, pictureID, userID];
+  List<Object?> get props => [
+        email,
+        fullname,
+        username,
+        password,
+        posts,
+        followers,
+        following,
+        postURL,
+        stories,
+        viewedStories,
+        pictureID,
+        userID,
+        description,
+      ];
 }
 
 class SearchedUser {
@@ -80,6 +98,7 @@ class SearchedUser {
   final List? viewedStories;
   final String? pictureID;
   final String? userID;
+  final String? description;
   const SearchedUser({
     @required this.email,
     @required this.fullname,
@@ -92,6 +111,7 @@ class SearchedUser {
     @required this.viewedStories,
     @required this.pictureID,
     @required this.userID,
+    @required this.description,
   });
 
   static const empty = SearchedUser(
@@ -105,7 +125,8 @@ class SearchedUser {
       stories: [],
       viewedStories: [],
       pictureID: '',
-      userID: '');
+      userID: '',
+      description: '');
 
   Map<String, dynamic> toJson() => _userToJson(this);
 
@@ -121,5 +142,6 @@ class SearchedUser {
         'viewedStories': instance.viewedStories,
         'pictureID': instance.pictureID,
         'userID': instance.userID,
+        'description': instance.description,
       };
 }
