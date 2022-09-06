@@ -20,7 +20,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _logoutUser(AppLogoutRequested event, Emitter<AuthState> emit) {
     try {
       unawaited(authRepository.logOut());
-      // unawaited(firebase_auth.FirebaseAuth.instance.signOut());
       emit(const AuthState.unauthenticated());
     } catch (_) {}
   }
@@ -47,14 +46,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 stories: userTest.stories,
                 viewedStories: userTest.viewedStories,
                 pictureID: userTest.pictureID,
-                userID: userTest.userID))
+                userID: userTest.userID,
+                description: userTest.description))
             : const AuthState.unauthenticated());
       } else {
         emit(AuthFailedState());
       }
     } on firebase_auth.FirebaseAuthException catch (_) {
       emit(AuthFailedState());
-      print('invalid email or password');
     }
   }
 }

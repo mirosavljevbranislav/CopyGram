@@ -42,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     postURL: document[i]['postURL'],
                     posts: document[i]['posts'],
                     userID: document[i]['userID'],
+                    description: document[i]['description'],
                   ),
                 );
               }

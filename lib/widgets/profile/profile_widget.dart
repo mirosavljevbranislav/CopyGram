@@ -122,9 +122,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       Padding(
                         padding: EdgeInsets.only(left: 5, right: 5),
                         child: Text(
-                          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s'
-                          'standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make'
-                          ' a type specimen book. ',
+                          widget.user.description.toString(),
                           style: TextStyle(color: secondaryColor),
                         ),
                       ),
@@ -167,14 +165,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                 fullname: widget.user.fullname,
                                                 username: widget.user.username,
                                                 posts: widget.user.posts,
-                                                followers: widget.user.followers,
-                                                following: widget.user.following,
+                                                followers:
+                                                    widget.user.followers,
+                                                following:
+                                                    widget.user.following,
                                                 postURL: widget.user.postURL,
                                                 stories: widget.user.stories,
-                                                viewedStories: widget.user.viewedStories,
-                                                pictureID: widget.user.pictureID,
+                                                viewedStories:
+                                                    widget.user.viewedStories,
+                                                pictureID:
+                                                    widget.user.pictureID,
                                                 userID: widget.user.userID,
-                                                description:widget.user.description,
+                                                description:
+                                                    widget.user.description,
                                               );
                                               Navigator.push(context,
                                                   MaterialPageRoute(

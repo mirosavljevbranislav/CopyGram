@@ -24,8 +24,7 @@ class HomeTest extends StatefulWidget {
 }
 
 class _HomeTestState extends State<HomeTest> {
-  final controller = PageController(
-      initialPage: 1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNSOT BILA 0 I NIJE HTELO DA MENJA
+  final controller = PageController(initialPage: 1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNOST BILA 0 I NIJE HTELO DA MENJA
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
