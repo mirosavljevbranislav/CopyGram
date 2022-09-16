@@ -15,5 +15,7 @@ List<Page> onGenerateAppViewPages(
       return [LoginScreen.page()];
     case AuthStatus.failed:
       return [LoginScreen.page()];
+    case AuthStatus.loading:
+      return [LoginScreen.page()];
   }
 }

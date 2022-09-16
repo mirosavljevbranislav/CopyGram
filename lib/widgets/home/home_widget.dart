@@ -63,6 +63,7 @@ class _HomeTestState extends State<HomeTest> {
               if (homeState is HomeInitial) {
                 return Center(child: CircularProgressIndicator(color: secondaryColor,));
               } else {
+                print('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE ' + homeState.posts[0]['comments'].toString());
                 return Column(children: [
                   Row(children: [
                     BlocBuilder<StoryBloc, StoryState>(

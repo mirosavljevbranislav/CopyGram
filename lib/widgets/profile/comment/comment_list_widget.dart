@@ -10,7 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../models/post.dart';
 
 class CommentListWidget extends StatefulWidget {
-  Post? post; 
+  Post? post;
   CommentListWidget({
     this.post,
     Key? key,
@@ -36,42 +36,17 @@ class _CommentListWidgetState extends State<CommentListWidget> {
     return Scaffold(
       appBar: AppBar(title: const Text('Comments')),
       body: SingleChildScrollView(
-        child: Column(children: [ 
-          StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection('comments').snapshots(),
-              builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-                if (streamsnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                final documents = streamsnapshot.data?.docs;
-
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height / 1.21,
-                  child: ScrollablePositionedList.builder(
-                    itemScrollController: itemController,
-                    itemCount: documents!.length,
-                    itemBuilder: (context, index) =>
-                        documents[index]['postID'] == 'w'
-                            ? CommentWidget(
-                                post: widget.post,
-                                comment: CommentModel(
-                                  username: documents[index]['username'],
-                                  commentID: documents[index]['commentID'],
-                                  postID: documents[index]['postID'],
-                                  likes: documents[index]['likes'],
-                                  pictureID: documents[index]['pictureID'],
-                                  commentedAt: documents[index]['commentedAt'],
-                                  commentContent: documents[index]
-                                      ['commentContent'],
-                                ),
-                              )
-                            : Container(),
-                  ),
-                );
-              }),
+        child: Column(children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 1.21,
+            child: ScrollablePositionedList.builder(
+                itemScrollController: itemController,
+                itemCount: widget.post!.comments!.length,
+                itemBuilder: (context, index) => CommentWidget(
+                      post: widget.post,
+                      index: index,
+                    )),
+          ),
           TextFormField(
             decoration: InputDecoration(labelText: 'Add new comment'),
             // scrollPadding: EdgeInsets.only(

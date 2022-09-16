@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/post.dart';
 import 'package:igc2/widgets/profile/comment/comment_list_widget.dart';
+import 'package:igc2/widgets/profile/comment/comment_widget.dart';
 
 import 'HeartAnimationWidget.dart';
 
@@ -122,7 +123,6 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
                   _likePicture();
                 }
               });
-              ;
             },
           ),
           height: MediaQuery.of(context).size.height / 2.5,
@@ -212,46 +212,14 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
               );
             }));
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: Text('View all n comments',
-                      style: TextStyle(color: secondaryColor))),
-              Padding(
-                padding: EdgeInsets.only(left: 5, right: 5),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Text('First username',
-                            style: TextStyle(color: secondaryColor)),
-                        Padding(
-                            padding: EdgeInsets.only(left: 5),
-                            child: Text('Actual comment',
-                                style: TextStyle(color: secondaryColor))),
-                      ]),
-                      Text('<3'),
-                    ]),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 5, right: 5),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(children: [
-                        Text('Second username',
-                            style: TextStyle(color: secondaryColor)),
-                        Padding(
-                            padding: EdgeInsets.only(left: 5),
-                            child: Text('Actual comment',
-                                style: TextStyle(color: secondaryColor))),
-                      ]),
-                      Text('<3', style: TextStyle(color: secondaryColor)),
-                    ]),
-              ),
-            ],
+          // child: ListView.builder(itemBuilder: (ctx, index) => CommentWidget(post: widget.post))
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CommentListWidget(post: widget.post);
+              }));
+            },
+            child: Text('Comments'),
           ),
         )
       ]),

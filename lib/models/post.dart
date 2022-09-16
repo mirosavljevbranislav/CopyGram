@@ -8,7 +8,7 @@ class Post {
   String? description;
   String? pictureTakenAt;
   List? likes;
-  List? comments;
+  List<dynamic>? comments;
 
   Post({
     this.profilePictureID,

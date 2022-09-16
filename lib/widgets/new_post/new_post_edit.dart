@@ -140,8 +140,11 @@ class _NewPostEditState extends State<NewPostEdit> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: themeColor,
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -155,76 +158,96 @@ class _NewPostEditState extends State<NewPostEdit> {
           )
         ],
       ),
-      body: Column(children: [
-        Row(
-          children: [
-            Flexible(
-              child: TextField(
-                controller: widget._captionController,
-                decoration: InputDecoration(labelText: 'Enter capotion...'),
+      body: Container(
+        color: themeColor,
+        child: Column(children: [
+          Row(
+            children: [
+              Flexible(
+                child: TextField(
+                  cursorColor: secondaryColor,
+                  style: TextStyle(color: secondaryColor),
+                  controller: widget._captionController,
+                  decoration: InputDecoration(
+                      labelText: 'Enter caption...',
+                      labelStyle: TextStyle(color: secondaryColor),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor)),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor))),
+                ),
+              ),
+              Image.file(
+                widget.imageFile!,
+                fit: BoxFit.cover,
+                width: 50,
+                height: 50,
+              )
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Divider(
+            height: 5,
+            color: Colors.grey,
+          ),
+          TextButton(
+            onPressed: () {
+              loc.Location();
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Tag people',
+                style: TextStyle(color: secondaryColor),
               ),
             ),
-            Image.file(
-              widget.imageFile!,
-              fit: BoxFit.cover,
-              width: 50,
-              height: 50,
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Divider(
-          height: 5,
-          color: Colors.grey,
-        ),
-        TextButton(
-          onPressed: () {
-            loc.Location();
-          },
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text('Tag people'),
           ),
-        ),
-        Divider(
-          height: 5,
-          color: Colors.grey,
-        ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          TextButton(
-              onPressed: () {
-                loc.Location();
-              },
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Add location'),
-              )),
-          TextButton(
-              onPressed: () async {
-                geo_loc.Position position = await _getGeoLocationPosition();
-                setState(() {
-                  getAddressFromLatLong(position);
-                });
-              },
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text('Current location'),
-              ))
+          Divider(
+            height: 5,
+            color: Colors.grey,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            TextButton(
+                onPressed: () {
+                  loc.Location();
+                },
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Add location',
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                )),
+            TextButton(
+                onPressed: () async {
+                  geo_loc.Position position = await _getGeoLocationPosition();
+                  setState(() {
+                    getAddressFromLatLong(position);
+                  });
+                },
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Current location',
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ))
+          ]),
+          Divider(
+            height: 5,
+            color: Colors.grey,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('Current address', style: TextStyle(color: secondaryColor),),
+              Text(widget.address.toString(), style: TextStyle(color: secondaryColor),),
+            ],
+          ),
         ]),
-        Divider(
-          height: 5,
-          color: Colors.grey,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Current address'),
-            Text(widget.address.toString()),
-          ],
-        ),
-      ]),
+      ),
     );
   }
 }

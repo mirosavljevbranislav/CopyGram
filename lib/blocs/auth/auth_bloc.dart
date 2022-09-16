@@ -25,6 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _loginUser(AppLoginRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
       await authRepository.logInWithEmailAndPassword(
           email: event.email, password: event.password);

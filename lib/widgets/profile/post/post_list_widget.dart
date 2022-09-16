@@ -40,9 +40,11 @@ class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Scaffold(
-      appBar: AppBar(title: const Text('Posts'), backgroundColor: themeColor,),
+      appBar: AppBar(
+        title: const Text('Posts'),
+        backgroundColor: themeColor,
+      ),
       body: StreamBuilder(
-      
           stream: FirebaseFirestore.instance.collection('posts').snapshots(),
           builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
             if (streamsnapshot.connectionState == ConnectionState.waiting) {
@@ -51,31 +53,30 @@ class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
               );
             }
             final documents = streamsnapshot.data?.docs;
-            if (documents != null) {
-              return Container(
-                color: themeColor,
-                child: ScrollablePositionedList.builder(
-                    itemScrollController: null,
-                    itemCount: widget.listLength,
-                    itemBuilder: (context, index) => documents[index]['userID'] == (widget.searchedUser.userID)
-                        ? SinglePostWidget(
-                            post: Post(
-                              profilePictureID: documents[index]['profilePictureID'],
-                              username: documents[index]['username'],
-                              userID: documents[index]['userID'],
-                              postID: documents[index]['postID'],
-                              picture: documents[index]['picture'],
-                              location: documents[index]['location'],
-                              description: documents[index]['description'],
-                              likes: documents[index]['likes'],
-                              comments: documents[index]['comments'],
-                              pictureTakenAt: documents[index]['pictureTakenAt'],
-                            ),
-                          )
-                        : Container()),
-              );
-            }
-            return Container();
+            return Expanded(
+              // color: themeColor,
+              child: ScrollablePositionedList.builder(
+                shrinkWrap: true,
+                  initialScrollIndex: widget.indexToScroll,
+                  itemScrollController: null,
+                  itemCount: widget.searchedUser.posts!,
+                  itemBuilder: (context, index) => documents![index]['userID'] == (widget.searchedUser.userID)
+                      ? SinglePostWidget(
+                          post: Post(
+                            profilePictureID: documents[index]['profilePictureID'],
+                            username: documents[index]['username'],
+                            userID: documents[index]['userID'],
+                            postID: documents[index]['postID'],
+                            picture: documents[index]['picture'],
+                            location: documents[index]['location'],
+                            description: documents[index]['description'],
+                            likes: documents[index]['likes'],
+                            comments: documents[index]['comments'],
+                            pictureTakenAt: documents[index]['pictureTakenAt'],
+                          ),
+                        )
+                      : Container()),
+            );
           }),
     );
   }

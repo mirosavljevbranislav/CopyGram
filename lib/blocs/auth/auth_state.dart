@@ -1,6 +1,6 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { authenticated, unauthenticated, failed }
+enum AuthStatus { authenticated, loading, unauthenticated, failed }
 
 class AuthState extends Equatable {
   final AuthStatus status;
@@ -15,11 +15,11 @@ class AuthState extends Equatable {
 
   const AuthState.unauthenticated() : this(status: AuthStatus.unauthenticated);
 
-  const AuthState.failed() : this(status: AuthStatus.failed);
 
   @override
   List<Object> get props => [status, user];
 }
+class AuthLoading extends AuthState {}
 
 class AppInitial extends AuthState {}
 

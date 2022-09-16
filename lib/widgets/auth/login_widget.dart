@@ -31,6 +31,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     Color passwordColor = Colors.grey;
     String usernameText = 'Email';
     String passwordText = 'Password';
+    bool isLoading = false;
+
     return Material(
       child: GestureDetector(
         onTap: () {
@@ -50,6 +52,8 @@ class _LoginWidgetState extends State<LoginWidget> {
               usernameText = 'Wrong email';
               passwordText = 'Wrong password';
               FocusScope.of(context).requestFocus(FocusNode());
+            } else if (state is AuthLoading) {
+              isLoading = true;
             }
             return Container(
               decoration: BoxDecoration(color: themeColor),
@@ -79,6 +83,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     themeColor: themeColor,
                     usernameController: usernameController,
                     passwordController: passwordController,
+                    isLoading: isLoading,
                   ),
                   _ForgotPassword(secondaryColor: secondaryColor),
                   Expanded(child: Container()),
@@ -220,12 +225,14 @@ class _Login extends StatelessWidget {
   Color themeColor;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   _Login({
     required this.secondaryColor,
     required this.themeColor,
     required this.usernameController,
     required this.passwordController,
+    required this.isLoading,
   });
   @override
   Widget build(BuildContext context) {
@@ -233,23 +240,32 @@ class _Login extends StatelessWidget {
         height: 60,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-        child: ElevatedButton(
-          onPressed: () {
-            context.read<AuthBloc>().add(AppLoginRequested(
-                email: usernameController.text,
-                password: passwordController.text));
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              isLoading = true;
+            }
+            return ElevatedButton.icon(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        context.read<AuthBloc>().add(AppLoginRequested(
+                            email: usernameController.text,
+                            password: passwordController.text));
+                      },
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return Colors.redAccent;
+                      }
+                      return secondaryColor;
+                    },
+                  ),
+                ),
+                icon: isLoading ? Container() : Container(),
+                label: isLoading ? Text('Logging in...') : Text('Login'));
           },
-          style: ButtonStyle(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.hovered)) {
-                  return Colors.redAccent;
-                } //<-- SEE HERE
-                return secondaryColor; // Defer to the widget's default.
-              },
-            ),
-          ),
-          child: const Text('Login'),
         ));
   }
 }

@@ -35,8 +35,11 @@ class _NewPostWidgetState extends State<NewPostWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: themeColor,
         title: const Text('New post'),
         leading: IconButton(
           icon: const Icon(Icons.cancel),
@@ -78,11 +81,13 @@ class _NewPostWidgetState extends State<NewPostWidget> {
         ],
       ),
       body: Material(
+        color: themeColor,
         child: Column(children: [
-          SizedBox(
+          Container(
+            color: themeColor,
             child: _imageFile == null
                 ? Center(
-                    child: Text('Press on camera button to take picture'),
+                    child: Text('Press on camera button to take picture', style: TextStyle(color: secondaryColor),),
                   )
                 : Image.file(
                     _imageFile!,
@@ -92,6 +97,7 @@ class _NewPostWidgetState extends State<NewPostWidget> {
             width: MediaQuery.of(context).size.width,
           ),
           Container(
+            color: themeColor,
             padding: EdgeInsets.only(left: 5, right: 5),
             width: double.infinity,
             child: Row(
@@ -102,7 +108,7 @@ class _NewPostWidgetState extends State<NewPostWidget> {
                       onPressed: () {
                         _getImages();
                       },
-                      child: Text('Gallery'),
+                      child: Text('Gallery', style: TextStyle(color: secondaryColor),),
                       style: TextButton.styleFrom(
                         primary: Colors.black,
                       ),
@@ -113,7 +119,7 @@ class _NewPostWidgetState extends State<NewPostWidget> {
                       onPressed: () {
                         pickImage();
                       },
-                      icon: Icon(Icons.camera_alt),
+                      icon: Icon(Icons.camera_alt, color: secondaryColor,),
                     ),
                   ),
                 ]),

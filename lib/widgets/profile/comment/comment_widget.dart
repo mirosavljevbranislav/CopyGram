@@ -1,19 +1,18 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, avoid_print, prefer_const_constructors, must_be_immutable, unnecessary_new, prefer_const_literals_to_create_immutables, avoid_function_literals_in_foreach_calls
+// ignore_for_file: prefer_const_constructors_in_immutables, avoid_print, prefer_const_constructors, must_be_immutable, unnecessary_new, prefer_const_literals_to_create_immutables, avoid_function_literals_in_foreach_calls, sized_box_for_whitespace
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/comment.dart';
 import '../../../models/post.dart';
 
 class CommentWidget extends StatefulWidget {
   Post? post;
-  CommentModel? comment;
+  int? index;
 
   CommentWidget({
     required this.post,
-    required this.comment,
+    required this.index,
     Key? key,
   }) : super(key: key);
 
@@ -24,15 +23,12 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   @override
   Widget build(BuildContext context) {
-    // Map<String, dynamic> userJson = widget.user!.toJson();
     Map<String, dynamic> postJson = widget.post!.toJson();
-    Map<String, dynamic> commentJson = widget.comment!.toJson();
     String? userID = FirebaseAuth.instance.currentUser?.uid;
     CollectionReference comments =
         FirebaseFirestore.instance.collection('comments');
     _likeComment() {
-      commentJson['likes'].add(userID);
-
+      postJson['comments'][widget.index]['likes'].add(userID);
       FirebaseFirestore.instance
           .collection('comments')
           .get()
@@ -54,7 +50,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
 
     _dislikeComment() {
-      commentJson['likes'].removeWhere((element) => element == userID);
+      postJson['comments'][widget.index]['likes'].removeWhere((element) => element == userID);
       FirebaseFirestore.instance
           .collection('comments')
           .get()
@@ -74,15 +70,14 @@ class _CommentWidgetState extends State<CommentWidget> {
         });
       });
     }
-
-    print(postJson);
     return Row(
       children: [
         Padding(
           padding: EdgeInsets.all(3),
           child: CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(commentJson['pictureID'].toString())),
+              backgroundImage: NetworkImage(
+                  postJson['comments'][widget.index]['pictureID'])),
         ),
         Row(
           children: [
@@ -102,10 +97,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                               ),
                               children: <TextSpan>[
                                 TextSpan(
-                                    text: commentJson['username'] + " ",
+                                    text: postJson['comments'][widget.index]
+                                            ['username'] +
+                                        " ",
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
-                                TextSpan(text: commentJson['commentContet']),
+                                TextSpan(
+                                    text: postJson['comments'][widget.index]
+                                        ['commentContent']),
                               ],
                             ),
                           )))
@@ -116,7 +115,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                   child: Row(
                     children: [
                       Text(
-                        commentJson['commentedAt'].toString(),
+                        postJson['comments'][widget.index]['commentedAt']
+                            .toString(),
                         style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold),
@@ -125,7 +125,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         width: 10,
                       ),
                       Text(
-                        '${commentJson['likes'].length} likes',
+                        '${postJson['comments'][widget.index]['likes'].length} likes',
                         style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold),
@@ -134,7 +134,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                     mainAxisAlignment: MainAxisAlignment.start,
                   ))
             ]),
-            commentJson['likes'].contains(userID)
+            postJson['comments'][widget.index]['likes'].contains(userID)
                 ? IconButton(
                     onPressed: () {
                       setState(() {

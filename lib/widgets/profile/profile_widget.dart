@@ -35,174 +35,154 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       });
     });
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.user.username.toString(),
-          style: TextStyle(color: secondaryColor),
+        appBar: AppBar(
+          title: Text(
+            widget.user.username.toString(),
+            style: TextStyle(color: secondaryColor),
+          ),
+          automaticallyImplyLeading: false,
+          backgroundColor: themeColor,
         ),
-        automaticallyImplyLeading: false,
-        backgroundColor: themeColor,
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
-        builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-          if (streamsnapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return Container(
+        body: Container(
             color: themeColor,
-            child: userEmail == widget.user.email
-                ? Column(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 15),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 25),
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                  widget.user.pictureID.toString(),
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              child: Text(
-                                '${widget.user.posts}\nPosts',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: secondaryColor),
-                              ),
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 15),
-                              ),
-                              onPressed: () {},
-                            ),
-                            TextButton(
-                              child: Text(
-                                '${widget.user.followers?.length.toString()}\nFollowers',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: secondaryColor),
-                              ),
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 15),
-                              ),
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return FollowingFollowersWidget(
-                                      user: widget.user, index: 0);
-                                }));
-                              },
-                            ),
-                            TextButton(
-                              child: Text(
-                                '${widget.user.following?.length.toString()}\nFollowing',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: secondaryColor),
-                              ),
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(fontSize: 15),
-                              ),
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return FollowingFollowersWidget(
-                                      user: widget.user, index: 1);
-                                }));
-                              },
-                            ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        ),
-                      ),
-                      SizedBox(height: 30),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        child: Text(
-                          widget.user.description.toString(),
-                          style: TextStyle(color: secondaryColor),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        width: double.infinity,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return EditProfile(
-                                user: widget.user,
-                              );
-                            }));
-                          },
-                          child: Text('Edit profile'),
-                          style: TextButton.styleFrom(
-                            backgroundColor: secondaryColor,
-                            primary: themeColor,
+                        padding: EdgeInsets.only(top: 25),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(
+                            widget.user.pictureID.toString(),
                           ),
                         ),
                       ),
-                      SizedBox(height: 30),
-                      Flexible(
-                        child: Container(
-                          color: themeColor,
-                          child: Column(children: [
-                            Flexible(
-                              child: GridView.count(
-                                  crossAxisCount: 3,
-                                  mainAxisSpacing: 3,
-                                  crossAxisSpacing: 3,
-                                  children: List.generate(
-                                      widget.user.postURL!.length,
-                                      (index) => InkWell(
-                                            onTap: () {
-                                              SearchedUser user = SearchedUser(
-                                                email: widget.user.email,
-                                                fullname: widget.user.fullname,
-                                                username: widget.user.username,
-                                                posts: widget.user.posts,
-                                                followers:
-                                                    widget.user.followers,
-                                                following:
-                                                    widget.user.following,
-                                                postURL: widget.user.postURL,
-                                                stories: widget.user.stories,
-                                                viewedStories:
-                                                    widget.user.viewedStories,
-                                                pictureID:
-                                                    widget.user.pictureID,
-                                                userID: widget.user.userID,
-                                                description:
-                                                    widget.user.description,
-                                              );
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return ProfilePostListWidget(
-                                                    listLength:
-                                                        listlength.length,
-                                                    indexToScroll: index,
-                                                    searchedUser: user);
-                                              }));
-                                            },
-                                            child: Image.network(
-                                              widget.user.postURL![index],
-                                            ),
-                                          ))),
-                            )
-                          ]),
+                      TextButton(
+                        child: Text(
+                          '${widget.user.posts}\nPosts',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: secondaryColor),
                         ),
-                      )
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 15),
+                        ),
+                        onPressed: () {},
+                      ),
+                      TextButton(
+                        child: Text(
+                          '${widget.user.followers?.length.toString()}\nFollowers',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: secondaryColor),
+                        ),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 15),
+                        ),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return FollowingFollowersWidget(
+                                user: widget.user, index: 0);
+                          }));
+                        },
+                      ),
+                      TextButton(
+                        child: Text(
+                          '${widget.user.following?.length.toString()}\nFollowing',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: secondaryColor),
+                        ),
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 15),
+                        ),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return FollowingFollowersWidget(
+                                user: widget.user, index: 1);
+                          }));
+                        },
+                      ),
                     ],
-                  )
-                : null,
-          );
-        },
-      ),
-    );
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  ),
+                ),
+                SizedBox(height: 30),
+                Padding(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  child: Text(
+                    widget.user.description.toString(),
+                    style: TextStyle(color: secondaryColor),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return EditProfile(
+                          user: widget.user,
+                        );
+                      }));
+                    },
+                    child: Text('Edit profile'),
+                    style: TextButton.styleFrom(
+                      backgroundColor: secondaryColor,
+                      primary: themeColor,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Flexible(
+                  child: Container(
+                    color: themeColor,
+                    child: Column(children: [
+                      Flexible(
+                        child: GridView.count(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 3,
+                            crossAxisSpacing: 3,
+                            children: List.generate(
+                                widget.user.postURL!.length,
+                                (index) => InkWell(
+                                      onTap: () {
+                                        SearchedUser user = SearchedUser(
+                                          email: widget.user.email,
+                                          fullname: widget.user.fullname,
+                                          username: widget.user.username,
+                                          posts: widget.user.posts,
+                                          followers: widget.user.followers,
+                                          following: widget.user.following,
+                                          postURL: widget.user.postURL,
+                                          stories: widget.user.stories,
+                                          viewedStories: widget.user.viewedStories,
+                                          pictureID: widget.user.pictureID,
+                                          userID: widget.user.userID,
+                                          description: widget.user.description,
+                                        );
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfilePostListWidget(
+                                              listLength: listlength.length,
+                                              indexToScroll: index,
+                                              searchedUser: user);
+                                        }));
+                                      },
+                                      child: Image.network(
+                                        widget.user.postURL![index],
+                                      ),
+                                    ))),
+                      )
+                    ]),
+                  ),
+                )
+              ],
+            )));
   }
 }
