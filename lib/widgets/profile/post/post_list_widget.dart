@@ -9,12 +9,12 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../models/post.dart';
 
 class ProfilePostListWidget extends StatefulWidget {
-  int listLength;
+  List listOfPosts;
   int indexToScroll;
   SearchedUser searchedUser;
 
   ProfilePostListWidget({
-    required this.listLength,
+    required this.listOfPosts,
     required this.indexToScroll,
     required this.searchedUser,
     Key? key,
@@ -44,40 +44,30 @@ class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
         title: const Text('Posts'),
         backgroundColor: themeColor,
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-          builder: (ctx, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-            if (streamsnapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            final documents = streamsnapshot.data?.docs;
-            return Expanded(
-              // color: themeColor,
-              child: ScrollablePositionedList.builder(
-                shrinkWrap: true,
-                  initialScrollIndex: widget.indexToScroll,
-                  itemScrollController: null,
-                  itemCount: widget.searchedUser.posts!,
-                  itemBuilder: (context, index) => documents![index]['userID'] == (widget.searchedUser.userID)
-                      ? SinglePostWidget(
-                          post: Post(
-                            profilePictureID: documents[index]['profilePictureID'],
-                            username: documents[index]['username'],
-                            userID: documents[index]['userID'],
-                            postID: documents[index]['postID'],
-                            picture: documents[index]['picture'],
-                            location: documents[index]['location'],
-                            description: documents[index]['description'],
-                            likes: documents[index]['likes'],
-                            comments: documents[index]['comments'],
-                            pictureTakenAt: documents[index]['pictureTakenAt'],
-                          ),
-                        )
-                      : Container()),
-            );
-          }),
+      body: Stack(children: [
+        Expanded(
+          child: ScrollablePositionedList.builder(
+              shrinkWrap: true,
+              initialScrollIndex: widget.indexToScroll,
+              itemScrollController: null,
+              itemCount: widget.searchedUser.posts!,
+              itemBuilder: (context, index) => SinglePostWidget(
+                      post: Post(
+                        profilePictureID: widget.listOfPosts[index].docs[index]['profilePictureID'],
+                        username: widget.listOfPosts[index].docs[index]['username'],
+                        userID: widget.listOfPosts[index].docs[index]['userID'],
+                        postID: widget.listOfPosts[index].docs[index]['postID'],
+                        picture: widget.listOfPosts[index].docs[index]['picture'],
+                        location: widget.listOfPosts[index].docs[index]['location'],
+                        description: widget.listOfPosts[index].docs[index]['description'],
+                        likes: widget.listOfPosts[index].docs[index]['likes'],
+                        comments: widget.listOfPosts[index].docs[index]['comments'],
+                        pictureTakenAt: widget.listOfPosts[index].docs[index]['pictureTakenAt'],
+                      ),
+                    )
+                  ),
+        ),
+      ]),
     );
   }
 }

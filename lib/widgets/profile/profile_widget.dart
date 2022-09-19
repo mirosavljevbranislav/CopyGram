@@ -23,7 +23,7 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   String? userEmail = FirebaseAuth.instance.currentUser?.email;
   String? currentUserID = FirebaseAuth.instance.currentUser?.uid;
-  List listlength = [];
+  List listOfPosts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     Color? secondaryColor = Theme.of(context).primaryColorLight;
     FirebaseFirestore.instance.collection("posts").get().then((value) {
       value.docs.forEach((result) {
-        listlength.add(value);
+        listOfPosts.add(value);
       });
     });
     return Scaffold(
@@ -166,10 +166,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           description: widget.user.description,
                                         );
                                         Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
+                                            MaterialPageRoute(builder: (context) {
                                           return ProfilePostListWidget(
-                                              listLength: listlength.length,
+                                              listOfPosts: listOfPosts,
                                               indexToScroll: index,
                                               searchedUser: user);
                                         }));

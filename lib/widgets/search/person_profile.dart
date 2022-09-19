@@ -277,27 +277,59 @@ class _PersonProfileState extends State<PersonProfile> {
                                             (index) => InkWell(
                                                   onTap: () {
                                                     SearchedUser user = SearchedUser(
-                                                        email: widget.searchedUser!.email,
-                                                        fullname: widget.searchedUser!.fullname,
-                                                        username: widget.searchedUser!.username,
-                                                        posts: widget.searchedUser!.posts,
-                                                        followers: widget.searchedUser!.followers,
-                                                        following: widget.searchedUser!.following,
-                                                        postURL: widget.searchedUser!.postURL,
-                                                        stories: widget.searchedUser!.stories,
-                                                        viewedStories: widget.searchedUser!.viewedStories,
-                                                        pictureID: widget.searchedUser!.pictureID,
-                                                        userID: widget.searchedUser!.userID,
+                                                        email: widget
+                                                            .searchedUser!
+                                                            .email,
+                                                        fullname: widget
+                                                            .searchedUser!
+                                                            .fullname,
+                                                        username: widget
+                                                            .searchedUser!
+                                                            .username,
+                                                        posts: widget
+                                                            .searchedUser!
+                                                            .posts,
+                                                        followers: widget
+                                                            .searchedUser!
+                                                            .followers,
+                                                        following: widget
+                                                            .searchedUser!
+                                                            .following,
+                                                        postURL: widget
+                                                            .searchedUser!
+                                                            .postURL,
+                                                        stories: widget
+                                                            .searchedUser!
+                                                            .stories,
+                                                        viewedStories: widget
+                                                            .searchedUser!
+                                                            .viewedStories,
+                                                        pictureID: widget
+                                                            .searchedUser!
+                                                            .pictureID,
+                                                        userID: widget
+                                                            .searchedUser!
+                                                            .userID,
                                                         description: widget.searchedUser!.description);
-                                                    Navigator.pushNamed(context,
-                                                        PostScreen.routeName,
-                                                        arguments:
-                                                            ProfilePostListWidget(
-                                                          listLength:
-                                                              listlength.length,
+
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return ProfilePostListWidget(
+                                                          listOfPosts:
+                                                              listlength,
                                                           indexToScroll: index,
-                                                          searchedUser: user,
-                                                        ));
+                                                          searchedUser: user);
+                                                    }));
+                                                    // Navigator.pushNamed(context,
+                                                    //     PostScreen.routeName,
+                                                    //     arguments:
+                                                    //         ProfilePostListWidget(
+                                                    //       listOfPosts:
+                                                    //           listlength,
+                                                    //       indexToScroll: index,
+                                                    //       searchedUser: user,
+                                                    //     ));
                                                   },
                                                   child: Image.network(
                                                     widget.searchedUser!

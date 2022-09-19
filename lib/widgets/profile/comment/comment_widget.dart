@@ -23,10 +23,13 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   @override
   Widget build(BuildContext context) {
+    Color? themeColor = Theme.of(context).primaryColor;
+    Color? secondaryColor = Theme.of(context).primaryColorLight;
     Map<String, dynamic> postJson = widget.post!.toJson();
     String? userID = FirebaseAuth.instance.currentUser?.uid;
     CollectionReference comments =
         FirebaseFirestore.instance.collection('comments');
+
     _likeComment() {
       postJson['comments'][widget.index]['likes'].add(userID);
       FirebaseFirestore.instance
@@ -50,7 +53,8 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
 
     _dislikeComment() {
-      postJson['comments'][widget.index]['likes'].removeWhere((element) => element == userID);
+      postJson['comments'][widget.index]['likes']
+          .removeWhere((element) => element == userID);
       FirebaseFirestore.instance
           .collection('comments')
           .get()
@@ -70,6 +74,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         });
       });
     }
+
     return Row(
       children: [
         Padding(
@@ -101,10 +106,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                                             ['username'] +
                                         " ",
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                        TextStyle(fontWeight: FontWeight.bold, color: secondaryColor)),
                                 TextSpan(
                                     text: postJson['comments'][widget.index]
-                                        ['commentContent']),
+                                        ['commentContent'], style: TextStyle(color: secondaryColor)),
                               ],
                             ),
                           )))
@@ -141,7 +146,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         _dislikeComment();
                       });
                     },
-                    icon: Icon(Icons.thumb_up_alt),
+                    icon: Icon(Icons.thumb_up_alt, color: secondaryColor,),
                   )
                 : IconButton(
                     onPressed: () {
@@ -149,7 +154,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         _likeComment();
                       });
                     },
-                    icon: Icon(Icons.thumb_up_alt_outlined),
+                    icon: Icon(Icons.thumb_up_alt_outlined, color: secondaryColor,),
                   )
           ],
         )
