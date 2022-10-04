@@ -27,12 +27,12 @@ class ProfilePostListWidget extends StatefulWidget {
 class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
   final itemController = ItemScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => scrollToIndex(widget.indexToScroll));
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance
+  //       .addPostFrameCallback((_) => scrollToIndex(widget.indexToScroll));
+  // }
 
   void scrollToIndex(int index) => itemController.jumpTo(index: index);
   @override
@@ -45,28 +45,26 @@ class _ProfilePostListWidgetState extends State<ProfilePostListWidget> {
         backgroundColor: themeColor,
       ),
       body: Stack(children: [
-        Expanded(
-          child: ScrollablePositionedList.builder(
-              shrinkWrap: true,
-              initialScrollIndex: widget.indexToScroll,
-              itemScrollController: null,
-              itemCount: widget.searchedUser.posts!,
-              itemBuilder: (context, index) => SinglePostWidget(
-                      post: Post(
-                        profilePictureID: widget.listOfPosts[index].docs[index]['profilePictureID'],
-                        username: widget.listOfPosts[index].docs[index]['username'],
-                        userID: widget.listOfPosts[index].docs[index]['userID'],
-                        postID: widget.listOfPosts[index].docs[index]['postID'],
-                        picture: widget.listOfPosts[index].docs[index]['picture'],
-                        location: widget.listOfPosts[index].docs[index]['location'],
-                        description: widget.listOfPosts[index].docs[index]['description'],
-                        likes: widget.listOfPosts[index].docs[index]['likes'],
-                        comments: widget.listOfPosts[index].docs[index]['comments'],
-                        pictureTakenAt: widget.listOfPosts[index].docs[index]['pictureTakenAt'],
-                      ),
-                    )
+        ScrollablePositionedList.builder(
+            shrinkWrap: true,
+            initialScrollIndex: widget.indexToScroll,
+            itemScrollController: null,
+            itemCount: widget.searchedUser.posts!,
+            itemBuilder: (context, index) => SinglePostWidget(
+                  post: Post(
+                    profilePictureID: widget.listOfPosts[index].docs[index]['profilePictureID'],
+                    username: widget.listOfPosts[index].docs[index]['username'],
+                    userID: widget.listOfPosts[index].docs[index]['userID'],
+                    postID: widget.listOfPosts[index].docs[index]['postID'],
+                    picture: widget.listOfPosts[index].docs[index]['picture'],
+                    location: widget.listOfPosts[index].docs[index]['location'],
+                    description: widget.listOfPosts[index].docs[index]['description'],
+                    likes: widget.listOfPosts[index].docs[index]['likes'],
+                    comments: widget.listOfPosts[index].docs[index]['comments'],
+                    pictureTakenAt: widget.listOfPosts[index].docs[index]['pictureTakenAt'],
                   ),
-        ),
+                  searchedUser: widget.searchedUser,
+                )),
       ]),
     );
   }

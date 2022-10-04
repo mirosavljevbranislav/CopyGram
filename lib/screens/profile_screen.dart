@@ -7,7 +7,6 @@ import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/profile/profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
-  static const routeName = '/profile';
 
   const ProfileScreen({Key? key}) : super(key: key);
 

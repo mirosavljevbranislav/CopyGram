@@ -11,12 +11,6 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
     on<PostStory>(_postStory);
   }
 
-
-
-  void _loadStory(LoadingStory event, Emitter<StoryState> emit) {
-    try {} catch (_) {}
-  }
-
   void _postStory(PostStory event, Emitter<StoryState> emit) async {
     try {
       emit(StoryInitial());

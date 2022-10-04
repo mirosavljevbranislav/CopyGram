@@ -12,7 +12,7 @@ class AuthRepository {
       : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
 
-  Future<SearchedUser?> getUserById(String userID) async {
+  Future<SearchedUser> getUserById(String userID) async {
     final user = await firebaseInstance
         .collection("users")
         .where("userID", isEqualTo: userID)
@@ -34,7 +34,7 @@ class AuthRepository {
             description: result.data()['description']);
       }
     });
-  return user;
+  return user!;
   }
 
   Future<void> singup({

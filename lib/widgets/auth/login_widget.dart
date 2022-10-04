@@ -3,11 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:igc2/blocs/auth/auth_bloc.dart';
-import 'package:igc2/screens/auth/registration_screen.dart';
+import 'package:igc2/widgets/auth/registration_widet.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
 
+  static Page page() => const MaterialPage<void>(child: LoginWidget());
   @override
   State<LoginWidget> createState() => _LoginWidgetState();
 }
@@ -242,13 +243,16 @@ class _Login extends StatelessWidget {
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
+            isLoading = false;
             if (state is AuthLoading) {
               isLoading = true;
             }
+
             return ElevatedButton.icon(
                 onPressed: isLoading
                     ? null
                     : () {
+                        isLoading = false;
                         context.read<AuthBloc>().add(AppLoginRequested(
                             email: usernameController.text,
                             password: passwordController.text));
@@ -305,7 +309,7 @@ class _SignUp extends StatelessWidget {
         TextButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RegistrationScreen();
+                return RegistrationWidget();
               }));
             },
             child: Text(

@@ -27,6 +27,6 @@ class CommentModel {
         'likes': instance.likes,
         'pictureID': instance.pictureID,
         'commentedAt': instance.commentedAt,
-        'commentContet': instance.commentContent,
+        'commentContent': instance.commentContent,
       };
 }

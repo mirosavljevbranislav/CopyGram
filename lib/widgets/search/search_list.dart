@@ -3,7 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
-import 'package:igc2/screens/profile/profile_screen.dart';
+import 'package:igc2/screens/profile_screen.dart';
 import 'package:igc2/widgets/search/person_profile.dart';
 
 class SearchList extends StatefulWidget {

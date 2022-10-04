@@ -27,62 +27,61 @@ class _CommentWidgetState extends State<CommentWidget> {
     Color? secondaryColor = Theme.of(context).primaryColorLight;
     Map<String, dynamic> postJson = widget.post!.toJson();
     String? userID = FirebaseAuth.instance.currentUser?.uid;
-    CollectionReference comments =
-        FirebaseFirestore.instance.collection('comments');
+    // CollectionReference comments = FirebaseFirestore.instance.collection('comments');
 
     _likeComment() {
-      postJson['comments'][widget.index]['likes'].add(userID);
-      FirebaseFirestore.instance
-          .collection('comments')
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          if (doc['commentID'] == 'w') {
-            comments.doc(postJson['postID']).update({
-              'commentContent': doc['commentContent'],
-              'commentID': doc['commentID'],
-              'commentedAt': postJson['commentedAt'],
-              'likes': doc['likes'],
-              'pictureID': doc['pictureID'],
-              'postID': doc['postID'],
-              'username': doc['username'],
-            });
-          }
-        });
-      });
+      // postJson['comments'][widget.index]['likes'].add(userID);
+      // FirebaseFirestore.instance
+      //     .collection('comments')
+      //     .get()
+      //     .then((QuerySnapshot querySnapshot) {
+      //   querySnapshot.docs.forEach((doc) {
+      //     if (doc['commentID'] == 'w') {
+      //       comments.doc(postJson['postID']).update({
+      //         'commentContent': doc['commentContent'],
+      //         'commentID': doc['commentID'],
+      //         'commentedAt': postJson['commentedAt'],
+      //         'likes': doc['likes'],
+      //         'pictureID': doc['pictureID'],
+      //         'postID': doc['postID'],
+      //         'username': doc['username'],
+      //       });
+      //     }
+      //   });
+      // });
     }
 
     _dislikeComment() {
-      postJson['comments'][widget.index]['likes']
-          .removeWhere((element) => element == userID);
-      FirebaseFirestore.instance
-          .collection('comments')
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          if (doc['commentID'] == 'w') {
-            comments.doc(postJson['postID']).update({
-              'commentContent': doc['commentContent'],
-              'commentID': doc['commentID'],
-              'commentedAt': postJson['commentedAt'],
-              'likes': doc['likes'],
-              'pictureID': doc['pictureID'],
-              'postID': doc['postID'],
-              'username': doc['username'],
-            });
-          }
-        });
-      });
+      // postJson['comments'][widget.index]['likes'].removeWhere((element) => element == userID);
+      // FirebaseFirestore.instance
+      //     .collection('comments')
+      //     .get()
+      //     .then((QuerySnapshot querySnapshot) {
+      //   querySnapshot.docs.forEach((doc) {
+      //     if (doc['commentID'] == 'w') {
+      //       comments.doc(postJson['postID']).update({
+      //         'commentContent': doc['commentContent'],
+      //         'commentID': doc['commentID'],
+      //         'commentedAt': postJson['commentedAt'],
+      //         'likes': doc['likes'],
+      //         'pictureID': doc['pictureID'],
+      //         'postID': doc['postID'],
+      //         'username': doc['username'],
+      //       });
+      //     }
+      //   });
+      // });
     }
-
+    if (widget.index! < 0) {
+      widget.index = 0; 
+    }
     return Row(
       children: [
         Padding(
           padding: EdgeInsets.all(3),
           child: CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(
-                  postJson['comments'][widget.index]['pictureID'])),
+              backgroundImage: NetworkImage(postJson['comments'][widget.index]['pictureID'])),
         ),
         Row(
           children: [
@@ -102,14 +101,11 @@ class _CommentWidgetState extends State<CommentWidget> {
                               ),
                               children: <TextSpan>[
                                 TextSpan(
-                                    text: postJson['comments'][widget.index]
-                                            ['username'] +
-                                        " ",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold, color: secondaryColor)),
+                                    text: postJson['comments'][widget.index]['username'] + " ",
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: secondaryColor)),
                                 TextSpan(
-                                    text: postJson['comments'][widget.index]
-                                        ['commentContent'], style: TextStyle(color: secondaryColor)),
+                                    text: postJson['comments'][widget.index]['commentContent'],
+                                    style: TextStyle(color: secondaryColor)),
                               ],
                             ),
                           )))

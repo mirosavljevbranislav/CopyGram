@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:igc2/blocs/comment_page/comment_page_bloc.dart';
 import 'package:igc2/models/post.dart';
 import 'package:igc2/widgets/profile/comment/comment_list_widget.dart';
 
@@ -15,6 +17,7 @@ class SinglePostWidget extends StatefulWidget {
 
   SinglePostWidget({
     required this.post,
+    this.searchedUser,
     Key? key,
   }) : super(key: key);
 
@@ -59,7 +62,6 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
       });
     }
 
-    print('GGGGGGGGGGGGGGGGGGGGGGG ' + postJson.toString());
     return Container(
       padding: EdgeInsets.only(bottom: 5),
       color: themeColor,
@@ -155,7 +157,15 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
                         ),
                       ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<CommentPageBloc>().add(LoadCommentsRequest(
+                        post: widget.post!,
+                        searchedUser: widget.searchedUser!));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return CommentListWidget();
+                    }));
+                  },
                   icon: Icon(
                     Icons.comment,
                     color: secondaryColor,
@@ -202,61 +212,87 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
         ),
         InkWell(
           onTap: () {
+            context.read<CommentPageBloc>().add(LoadCommentsRequest(
+                post: widget.post!, searchedUser: widget.searchedUser!));
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return CommentListWidget(
-                post: widget.post,
-              );
+              return CommentListWidget();
             }));
           },
           child: postJson['comments'].length != 0
               ? Align(
                   alignment: Alignment.centerLeft,
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return CommentListWidget(post: widget.post);
-                            }));
-                          },
-                          child: Text(
-                              'View all ${widget.post!.comments!.length} comments', style: TextStyle(color: Colors.grey),),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          context.read<CommentPageBloc>().add(
+                              LoadCommentsRequest(
+                                  post: widget.post!,
+                                  searchedUser: widget.searchedUser!));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return CommentListWidget(
+                              post: widget.post,
+                              user: widget.searchedUser,
+                            );
+                          }));
+                        },
+                        child: Text(
+                          'View all ${widget.post!.comments!.length} comments',
+                          style: TextStyle(color: Colors.grey),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              postJson['comments'][0]['username'],
-                              style: TextStyle(color: secondaryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            postJson['comments'][0]['username'],
+                            style: TextStyle(
+                                color: secondaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                          Text(
+                            postJson['comments'][0]['commentContent'],
+                            style: TextStyle(
+                              color: secondaryColor,
                             ),
-                            Text(
-                              postJson['comments'][0]['commentContent'],
-                              style: TextStyle(color: secondaryColor, ),
-                            ),
-                            Icon(Icons.thumb_up_alt_outlined, color: secondaryColor, size: 17,)
-                          ],
-                        ),
-                        SizedBox(height: 3),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              postJson['comments'][1]['username'],
-                              style: TextStyle(color: secondaryColor, fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                            Text(
-                              postJson['comments'][1]['commentContent'],
-                              style: TextStyle(color: secondaryColor, ),
-                            ),
-                            Icon(Icons.thumb_up_alt_outlined, color: secondaryColor, size: 17,)
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          Icon(
+                            Icons.thumb_up_alt_outlined,
+                            color: secondaryColor,
+                            size: 17,
+                          )
+                        ],
+                      ),
+                      postJson['comments'].length >= 2
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  postJson['comments'][1]['username'],
+                                  style: TextStyle(
+                                      color: secondaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                                Text(
+                                  postJson['comments'][1]['commentContent'],
+                                  style: TextStyle(
+                                    color: secondaryColor,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.thumb_up_alt_outlined,
+                                  color: secondaryColor,
+                                  size: 17,
+                                )
+                              ],
+                            )
+                          : Container(),
+                    ],
                   ),
                 )
               : Container(),

@@ -24,7 +24,7 @@ class HomeTest extends StatefulWidget {
 }
 
 class _HomeTestState extends State<HomeTest> {
-  final controller = PageController(initialPage: 1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNOST BILA 0 I NIJE HTELO DA MENJA
+  final controller = PageController(initialPage:1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNOST BILA 0 I NIJE HTELO DA MENJA
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
@@ -32,7 +32,7 @@ class _HomeTestState extends State<HomeTest> {
     final authStateUser = context.select((AuthBloc bloc) => bloc.state.user);
     final following = [];
     FirebaseFirestore.instance
-        .collection("users") 
+        .collection("users")
         .where("userID", isEqualTo: authStateUser.userID)
         .get()
         .then((value) {
@@ -45,11 +45,16 @@ class _HomeTestState extends State<HomeTest> {
         backgroundColor: themeColor,
         title: Text(
           'CopyGram',
-          style: TextStyle(fontFamily: 'DancingScript', fontSize: 34, color: secondaryColor),
+          style: TextStyle(
+              fontFamily: 'DancingScript', fontSize: 34, color: secondaryColor),
         ),
         actions: [
           IconButton(
-              icon: Icon(Icons.chat_bubble_rounded, color: secondaryColor,), onPressed: () {}),
+              icon: Icon(
+                Icons.chat_bubble_rounded,
+                color: secondaryColor,
+              ),
+              onPressed: () {}),
         ],
       ),
       body: PageView(children: [
@@ -61,13 +66,18 @@ class _HomeTestState extends State<HomeTest> {
           child: BlocBuilder<HomeBloc, HomeState>(
             builder: (((context, homeState) {
               if (homeState is HomeInitial) {
-                return Center(child: CircularProgressIndicator(color: secondaryColor,));
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: secondaryColor,
+                ));
               } else {
+                print('EE ' + homeState.user.username.toString());
                 return Column(children: [
                   Row(children: [
                     BlocBuilder<StoryBloc, StoryState>(
                       builder: (context, storystate) {
-                        if (storystate is NoStoryState || authStateUser.stories!.isEmpty) {
+                        if (storystate is NoStoryState ||
+                            authStateUser.stories!.isEmpty) {
                           return NoStoryWidget(
                             pictureID: authStateUser.pictureID!,
                             secondaryColor: secondaryColor,
@@ -79,19 +89,18 @@ class _HomeTestState extends State<HomeTest> {
                         return YourStoryWidget(
                             secondaryColor: secondaryColor,
                             user: SearchedUser(
-                              email: authStateUser.email,
-                              fullname: authStateUser.fullname,
-                              username: authStateUser.username,
-                              posts: authStateUser.posts,
-                              followers: authStateUser.followers,
-                              following: authStateUser.following,
-                              postURL: authStateUser.postURL,
-                              stories: authStateUser.stories,
-                              viewedStories: authStateUser.viewedStories,
-                              pictureID: authStateUser.pictureID,
-                              userID: authStateUser.userID,
-                              description: authStateUser.description
-                            ));
+                                email: authStateUser.email,
+                                fullname: authStateUser.fullname,
+                                username: authStateUser.username,
+                                posts: authStateUser.posts,
+                                followers: authStateUser.followers,
+                                following: authStateUser.following,
+                                postURL: authStateUser.postURL,
+                                stories: authStateUser.stories,
+                                viewedStories: authStateUser.viewedStories,
+                                pictureID: authStateUser.pictureID,
+                                userID: authStateUser.userID,
+                                description: authStateUser.description));
                       },
                     ),
                     Row(
@@ -121,6 +130,7 @@ class _HomeTestState extends State<HomeTest> {
                                     likes: homeState.posts[index]['likes'],
                                     comments: homeState.posts[index]['comments'],
                                     pictureTakenAt: homeState.posts[index]['pictureTakenAt']),
+                                searchedUser: homeState.user,
                               )),
                         ),
                       ),

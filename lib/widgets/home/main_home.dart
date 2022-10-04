@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:igc2/widgets/home/settings.dart';
+import 'package:igc2/widgets/search/search_widget.dart';
 
-import '../../screens/home/settings_screen.dart';
-import '../../screens/profile/new_post_screen.dart';
-import '../../screens/profile/profile_screen.dart';
-import '../../screens/search/search_screen.dart';
+import '../../screens/profile_screen.dart';
+import '../new_post/new_post_widget.dart';
 import 'home_widget.dart';
 
 class NewHome extends StatefulWidget {
@@ -22,9 +22,9 @@ class _NewHomeState extends State<NewHome> {
     if (screenToReturn == '' || screenToReturn == 'home') {
       return const HomeTest();
     } else if (screenToReturn == 'search') {
-      return const SearchScreen();
+      return SearchWidget();
     } else if (screenToReturn == 'settings') {
-      return SettingsScreen();
+      return SettingsWidget();
     } else if (screenToReturn == 'profile') {
       return const ProfileScreen();
     }
@@ -63,7 +63,7 @@ class _NewHomeState extends State<NewHome> {
             IconButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const NewPostScreen();
+                  return NewPostWidget();
                 }));
               },
               icon: const Icon(Icons.add_box),

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:igc2/models/user.dart';
 import 'package:igc2/widgets/profile/following_followers_widget.dart';
-import '../../screens/profile/post_screen.dart';
 import '../profile/post/post_list_widget.dart';
 
 class PersonProfile extends StatefulWidget {

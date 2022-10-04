@@ -1,7 +1,5 @@
 part of 'story_bloc.dart';
 
-enum StoryStatus { noStory, loading, posted }
-
 abstract class StoryState extends Equatable {
   const StoryState();
 
