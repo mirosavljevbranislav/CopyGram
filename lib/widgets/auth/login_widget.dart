@@ -1,8 +1,11 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, unused_local_variable, must_be_immutable
+// ignore_for_file: avoid_print, prefer_const_constructors, unused_local_variable, must_be_immutable, sized_box_for_whitespace
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:igc2/blocs/auth/auth_bloc.dart';
+import 'package:igc2/repository/auth_repository.dart';
 import 'package:igc2/widgets/auth/registration_widet.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -33,6 +36,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     String usernameText = 'Email';
     String passwordText = 'Password';
     bool isLoading = false;
+    bool passResetRequested = false;
+    double topPadding = 150;
 
     return Material(
       child: GestureDetector(
@@ -58,7 +63,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             }
             return Container(
               decoration: BoxDecoration(color: themeColor),
-              padding: const EdgeInsets.only(top: 150),
+              padding: EdgeInsets.only(top: passResetRequested ? 90 : 150),
               alignment: Alignment.topLeft,
               width: 150,
               height: 100,
@@ -86,7 +91,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                     passwordController: passwordController,
                     isLoading: isLoading,
                   ),
-                  _ForgotPassword(secondaryColor: secondaryColor),
+                  _ForgotPassword(
+                    secondaryColor: secondaryColor,
+                    userEmail: 'mirosavljev01@gmail.com',
+                    passResetRequested: passResetRequested,
+                  ),
                   Expanded(child: Container()),
                   _SignUp(secondaryColor: secondaryColor),
                 ],
@@ -274,21 +283,112 @@ class _Login extends StatelessWidget {
   }
 }
 
-class _ForgotPassword extends StatelessWidget {
+class _ForgotPassword extends StatefulWidget {
   Color secondaryColor;
-  _ForgotPassword({required this.secondaryColor});
+  String userEmail;
+  bool passResetRequested;
+  _ForgotPassword({
+    required this.secondaryColor,
+    required this.userEmail,
+    required this.passResetRequested,
+  });
+
+  @override
+  State<_ForgotPassword> createState() => __ForgotPasswordState();
+}
+
+class __ForgotPasswordState extends State<_ForgotPassword> {
+  bool _visible = false;
+  late FocusNode forgotPasswordFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    forgotPasswordFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    forgotPasswordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        print('Forgot password pressed');
-      },
-      child: Text(
-        'Forgot password?',
-        style: TextStyle(color: secondaryColor),
+    AuthRepository authRepo = AuthRepository();
+    final emailController = TextEditingController();
+    return Column(children: [
+      TextButton(
+        onPressed: () {
+          widget.passResetRequested = !widget.passResetRequested;
+          setState(() {
+            _visible = !_visible;
+            Timer(const Duration(milliseconds: 10),
+                () => forgotPasswordFocusNode.requestFocus());
+          });
+        },
+        child: Text(
+          'Forgot password?',
+          style: TextStyle(color: widget.secondaryColor),
+        ),
       ),
-    );
+      AnimatedOpacity(
+        // If the widget is visible, animate to 0.0 (invisible).
+        // If the widget is hidden, animate to 1.0 (fully visible).
+        opacity: _visible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 500),
+        child: Column(children: [
+          Container(
+              width: 250,
+              child: TextField(
+                controller: emailController,
+                // readOnly: _visible? false : true,
+                enabled: _visible ? true : false,
+                focusNode: forgotPasswordFocusNode,
+                style: TextStyle(color: Colors.blue),
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Enter your email',
+                ),
+              )),
+          Container(
+            width: 100,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Colors.transparent),
+                onPressed: _visible
+                    ? () {
+                        authRepo.resetPassword(emailController.text);
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: Text(
+                                      'An password reset has been sent to your email.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          _visible = !_visible;
+                                        });
+                                        emailController.clear();
+                                      },
+                                      child: Text('Ok'),
+                                    )
+                                  ],
+                                ));
+                      }
+                    : null,
+                child: Row(
+                  children: const [
+                    Text('Send', style: TextStyle(color: Colors.blue)),
+                    SizedBox(width: 10),
+                    Icon(Icons.send, color: Colors.blue),
+                  ],
+                )),
+          ),
+        ]),
+      ),
+    ]);
   }
 }
 

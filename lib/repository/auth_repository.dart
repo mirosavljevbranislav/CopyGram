@@ -11,7 +11,6 @@ class AuthRepository {
   AuthRepository({firebase_auth.FirebaseAuth? firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
 
-
   Future<SearchedUser> getUserById(String userID) async {
     final user = await firebaseInstance
         .collection("users")
@@ -34,7 +33,11 @@ class AuthRepository {
             description: result.data()['description']);
       }
     });
-  return user!;
+    return user!;
+  }
+
+  Future<void> resetPassword(String email) async {
+    await firebase_auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
   Future<void> singup({
@@ -63,5 +66,3 @@ class AuthRepository {
     } catch (_) {}
   }
 }
-
-

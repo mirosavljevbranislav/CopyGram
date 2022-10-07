@@ -6,7 +6,6 @@ import 'package:story_view/story_view.dart';
 import '../../../models/user.dart';
 
 class StoryPageView extends StatefulWidget {
-  static const routeName = '/stories';
   SearchedUser? user;
   StoryPageView({
     this.user,
@@ -31,15 +30,26 @@ class _StoryPageViewState extends State<StoryPageView> {
             },
             storyItems: [
               for (var i in widget.user!.stories!)
-                StoryItem.pageImage(
-                    url: i,
-                    controller: storyController),
+                StoryItem.pageImage(url: i, controller: storyController),
             ],
             controller: storyController,
             inline: false,
             repeat: false,
           ),
-          Text(widget.user!.username!)
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 60, left: 20),
+              child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(widget.user!.pictureID!)),
+            ),
+            Container(
+                padding: const EdgeInsets.only(top: 60, left: 14),
+                child: Text(
+                  widget.user!.username!,
+                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                ))
+          ])
         ]),
       );
     }

@@ -1,12 +1,13 @@
 // ignore_for_file: must_be_immutable, void_checks, avoid_function_literals_in_foreach_calls
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:igc2/blocs/auth/auth_bloc.dart';
 import 'package:igc2/widgets/home/story/add_story.dart';
 import 'package:igc2/widgets/home/story/no_story_widget.dart';
-import 'package:igc2/widgets/home/story/your_story_widget.dart';
+import 'package:igc2/widgets/home/story/circle_story_widget.dart';
 
 import '../../blocs/home/home_bloc.dart';
 import '../../blocs/story/story_bloc.dart';
@@ -24,22 +25,14 @@ class HomeTest extends StatefulWidget {
 }
 
 class _HomeTestState extends State<HomeTest> {
-  final controller = PageController(initialPage:1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNOST BILA 0 I NIJE HTELO DA MENJA
+  final controller = PageController(
+      initialPage:
+          1); // OVDE SAM MENJAO INITIAL PAGE SA 0 NA 1 JER JE DEFAULT VREDNOST BILA 0 I NIJE HTELO DA MENJA
   @override
   Widget build(BuildContext context) {
     Color? themeColor = Theme.of(context).primaryColor;
     Color? secondaryColor = Theme.of(context).primaryColorLight;
     final authStateUser = context.select((AuthBloc bloc) => bloc.state.user);
-    final following = [];
-    FirebaseFirestore.instance
-        .collection("users")
-        .where("userID", isEqualTo: authStateUser.userID)
-        .get()
-        .then((value) {
-      value.docs.forEach((result) {
-        following.add(result.data()['following']);
-      });
-    });
     return Scaffold(
       appBar: AppBar(
         backgroundColor: themeColor,
@@ -71,42 +64,75 @@ class _HomeTestState extends State<HomeTest> {
                   color: secondaryColor,
                 ));
               } else {
-                print('EE ' + homeState.user.username.toString());
                 return Column(children: [
-                  Row(children: [
-                    BlocBuilder<StoryBloc, StoryState>(
-                      builder: (context, storystate) {
-                        if (storystate is NoStoryState ||
-                            authStateUser.stories!.isEmpty) {
-                          return NoStoryWidget(
-                            pictureID: authStateUser.pictureID!,
-                            secondaryColor: secondaryColor,
-                            user: authStateUser.toJson(),
+                  SizedBox(
+                    height: 100,
+                    child: Row(children: [
+                      BlocBuilder<StoryBloc, StoryState>(
+                        builder: (context, storystate) {
+                          if (storystate is NoStoryState ||
+                              authStateUser.stories!.isEmpty) {
+                            return NoStoryWidget(
+                              pictureID: authStateUser.pictureID!,
+                              secondaryColor: secondaryColor,
+                              user: authStateUser.toJson(),
+                            );
+                          } else if (storystate is StoryInitial) {
+                            const CircularProgressIndicator();
+                          }
+                          return CircleStoryWidget(
+                            storyText: 'Your story',
+                              secondaryColor: secondaryColor,
+                              user: SearchedUser(
+                                  email: authStateUser.email,
+                                  fullname: authStateUser.fullname,
+                                  username: authStateUser.username,
+                                  posts: authStateUser.posts,
+                                  followers: authStateUser.followers,
+                                  following: authStateUser.following,
+                                  postURL: authStateUser.postURL,
+                                  stories: authStateUser.stories,
+                                  viewedStories: authStateUser.viewedStories,
+                                  pictureID: authStateUser.pictureID,
+                                  userID: authStateUser.userID,
+                                  description: authStateUser.description));
+                        },
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: authStateUser.following!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (ctx, index) {
+                          return StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .where('followers',arrayContains: authStateUser.userID)
+                                .snapshots(),
+                            builder: (_, AsyncSnapshot<QuerySnapshot> snapshots) {
+                              var documents = snapshots.data?.docs;
+                              return CircleStoryWidget(
+                                storyText: documents![index]['username'],
+                                secondaryColor: secondaryColor,
+                                user: SearchedUser(
+                                    email: documents[index]['email'],
+                                    fullname: documents[index]['fullname'],
+                                    username: documents[index]['username'],
+                                    posts: documents[index]['posts'],
+                                    followers: documents[index]['followers'],
+                                    following: documents[index]['following'],
+                                    postURL: documents[index]['postURL'],
+                                    stories: documents[index]['stories'],
+                                    viewedStories: documents[index]['viewedStories'],
+                                    pictureID: documents[index]['pictureID'],
+                                    userID: documents[index]['userID'],
+                                    description: documents[index]['description']),
+                              );
+                            },
                           );
-                        } else if (storystate is StoryInitial) {
-                          const CircularProgressIndicator();
-                        }
-                        return YourStoryWidget(
-                            secondaryColor: secondaryColor,
-                            user: SearchedUser(
-                                email: authStateUser.email,
-                                fullname: authStateUser.fullname,
-                                username: authStateUser.username,
-                                posts: authStateUser.posts,
-                                followers: authStateUser.followers,
-                                following: authStateUser.following,
-                                postURL: authStateUser.postURL,
-                                stories: authStateUser.stories,
-                                viewedStories: authStateUser.viewedStories,
-                                pictureID: authStateUser.pictureID,
-                                userID: authStateUser.userID,
-                                description: authStateUser.description));
-                      },
-                    ),
-                    Row(
-                      children: [],
-                    )
-                  ]),
+                        },
+                      ),
+                    ]),
+                  ),
                   const SizedBox(height: 1),
                   Expanded(
                     child: Center(

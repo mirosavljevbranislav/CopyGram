@@ -6,25 +6,23 @@ import 'package:igc2/widgets/home/story/story.dart';
 
 import '../../../models/user.dart';
 
-class YourStoryWidget extends StatefulWidget {
+class CircleStoryWidget extends StatefulWidget {
   SearchedUser? user;
   Color? secondaryColor;
-  YourStoryWidget({
+  String? storyText;
+  CircleStoryWidget({
     this.user,
     this.secondaryColor,
+    this.storyText,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<YourStoryWidget> createState() => _YourStoryWidgetState();
+  State<CircleStoryWidget> createState() => _CircleStoryWidgetState();
 }
 
-class _YourStoryWidgetState extends State<YourStoryWidget> {
+class _CircleStoryWidgetState extends State<CircleStoryWidget> {
   bool _checkStoryView() {
-    // if (widget.user!.viewedStories!.contains(widget.user!.stories)){
-    //   return true;
-    // }
-    // return false;
     for (int i = 0; i < widget.user!.stories!.length; i++) {
       for (int j = 0; j < widget.user!.viewedStories!.length; j++) {
         if (widget.user!.stories![i] == widget.user!.viewedStories![j]) {
@@ -93,7 +91,7 @@ class _YourStoryWidgetState extends State<YourStoryWidget> {
         ),
       ),
       Text(
-        'Your story',
+        widget.storyText!,
         style: TextStyle(fontSize: 14, color: widget.secondaryColor),
       )
     ]);

@@ -22,7 +22,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var userID =  FirebaseAuth.instance.currentUser!.uid;
       List<Map> emptyListOfPosts = <Map>[];
       SearchedUser user = await authRepo.getUserById(userID);
-      print('FF ' + user.username.toString());
       await FirebaseFirestore.instance
           .collection('posts')
           .get()
@@ -31,7 +30,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emptyListOfPosts.add(element.data());
         }
       });
-      print('FF ' + user.username.toString());
       emit(HomeState.loaded(emptyListOfPosts, user));
     } catch (_) {}
   }

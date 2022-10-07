@@ -3,7 +3,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:igc2/models/comment.dart';
 
 import '../../models/post.dart';
 import '../../models/user.dart';
@@ -17,34 +16,47 @@ class CommentPageBloc extends Bloc<CommentPageEvent, CommentPageState> {
     on<PostCommentRequest>(_postComment);
   }
 
-  void _loadComments(
-      LoadCommentsRequest event, Emitter<CommentPageState> emit) async {
+  void _loadComments(LoadCommentsRequest event, Emitter<CommentPageState> emit) async {
+    CollectionReference commentCollection = FirebaseFirestore.instance.collection('comments');
+    List comments = [];
     emit(CommentPageLoadingState());
     try {
+      await commentCollection
+          .where('postID', isEqualTo: event.post.postID)
+          .get()
+          .then(((value) {
+        value.docs.forEach((element) {
+          if (element.data() != null) {
+            comments.add(element.data());
+          }
+        });
+      }));
       emit(CommentPageLoadedState(
-          post: event.post, searchedUser: event.searchedUser));
+          post: event.post ,comments: comments, searchedUser: event.searchedUser));
     } catch (_) {
       emit(CommentPageFailedState());
     }
   }
 
   void _postComment(PostCommentRequest event, Emitter<CommentPageState> emit) async {
-    CollectionReference postsCollection = FirebaseFirestore.instance.collection('posts');
+    CollectionReference commentCollection = FirebaseFirestore.instance.collection('comments');
+    List comments = [];
     emit(CommentPagePostingState());
     try {
-      event.post.comments!.add(event.newComment);
-      String postID = event.post.postID.toString();
-      postsCollection
-          .where("postID", isEqualTo: postID)
+      // commentCollection.add(event.newComment);
+      commentCollection.doc(event.newComment!['commentID']).set(event.newComment);
+      await commentCollection
+          .where('postID', isEqualTo: event.post.postID)
           .get()
-          .then((value) {
-        value.docs.forEach((result) {
-          postsCollection
-              .doc(postID)
-              .update({'comments': event.post.comments});
+          .then(((value) {
+        value.docs.forEach((element) {
+          if (element.data() != null) {
+            comments.add(element.data());
+          }
         });
-      });
-      emit(CommentPageLoadedState(post: event.post, searchedUser: event.searchedUser));
+      }));
+      emit(CommentPageLoadedState(
+          post: event.post, comments: comments, searchedUser: event.searchedUser));
     } catch (_) {
       emit(CommentPageFailedState());
     }

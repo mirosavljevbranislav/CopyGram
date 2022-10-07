@@ -62,8 +62,9 @@ class _CommentListWidgetState extends State<CommentListWidget> {
                     height: MediaQuery.of(context).size.height / 1.21,
                     child: ScrollablePositionedList.builder(
                         itemScrollController: itemController,
-                        itemCount: state.post.comments!.length,
+                        itemCount: state.comments.length,
                         itemBuilder: (context, index) => CommentWidget(
+                              comments: state.comments,
                               post: state.post,
                               index: index,
                             )),

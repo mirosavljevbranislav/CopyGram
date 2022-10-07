@@ -14,7 +14,6 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
   void _postStory(PostStory event, Emitter<StoryState> emit) async {
     try {
       emit(StoryInitial());
-      await Future<void>.delayed(const Duration(seconds: 3));
       emit(PostedStoryState());
     } catch (_) {}
   }

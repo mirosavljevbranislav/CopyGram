@@ -34,6 +34,7 @@ class _SinglePostWidgetState extends State<SinglePostWidget> {
     Map<String, dynamic> postJson = widget.post!.toJson();
     String? userID = FirebaseAuth.instance.currentUser?.uid;
     CollectionReference posts = FirebaseFirestore.instance.collection('posts');
+    CollectionReference comments = FirebaseFirestore.instance.collection('comments');
 
     _likePicture() {
       postJson['likes'].add(userID);

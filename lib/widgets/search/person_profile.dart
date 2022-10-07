@@ -320,15 +320,6 @@ class _PersonProfileState extends State<PersonProfile> {
                                                           indexToScroll: index,
                                                           searchedUser: user);
                                                     }));
-                                                    // Navigator.pushNamed(context,
-                                                    //     PostScreen.routeName,
-                                                    //     arguments:
-                                                    //         ProfilePostListWidget(
-                                                    //       listOfPosts:
-                                                    //           listlength,
-                                                    //       indexToScroll: index,
-                                                    //       searchedUser: user,
-                                                    //     ));
                                                   },
                                                   child: Image.network(
                                                     widget.searchedUser!

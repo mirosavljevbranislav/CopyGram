@@ -15,15 +15,17 @@ class CommentPageLoadingState extends CommentPageState {}
 
 class CommentPageLoadedState extends CommentPageState {
   Post post;
+  List comments;
   SearchedUser searchedUser;
 
   CommentPageLoadedState({
     required this.post,
+    required this.comments,
     required this.searchedUser,
   });
 
   @override
-  List<Object> get props => [post, searchedUser];
+  List<Object> get props => [post, comments, searchedUser];
 }
 
 class CommentPageFailedState extends CommentPageState {}
